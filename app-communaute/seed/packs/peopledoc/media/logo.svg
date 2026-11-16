@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Logo d'exemple">
+  <rect width="64" height="64" rx="14" fill="#0f6e73"/>
+  <path d="M21 14h15l9 9v25a2 2 0 0 1-2 2H21a2 2 0 0 1-2-2V16a2 2 0 0 1 2-2Z" fill="#ffffff"/>
+  <path d="M36 14v9h9" fill="#b9dfe1"/>
+  <path d="M25 31h14M25 37h14M25 43h9" stroke="#0f6e73" stroke-width="2.5" stroke-linecap="round"/>
+</svg>

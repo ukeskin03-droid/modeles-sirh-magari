@@ -1,0 +1,250 @@
+/**
+ * LIBELLÉS DU MOTEUR (français)
+ *
+ * Tous les textes des écrans communs sont ici. Pour changer un texte, modifiez la
+ * valeur à droite ; ne changez jamais la clé à gauche, qui sert à retrouver le texte.
+ * La syntaxe des libellés ({nom}, {terme:…}) est expliquée dans translate.ts.
+ */
+export const coreLabels: Record<string, string> = {
+  // ── Général
+  "core.community.defaultName": "Ma communauté",
+  "core.loading": "Chargement…",
+  "core.skipToContent": "Aller au contenu",
+  "core.confirm.cancel": "Annuler",
+  "core.notFound.title": "Page introuvable",
+  "core.notFound.text": "Cette page n'existe pas ou n'est plus disponible.",
+  "core.notFound.back": "Revenir à l'accueil",
+  "core.error.title": "Un problème est survenu",
+  "core.error.text": "La page n'a pas pu s'afficher. Vous pouvez réessayer ; si le problème persiste, prévenez un administrateur.",
+  "core.error.retry": "Réessayer",
+
+  // ── En-tête et navigation
+  "core.nav.main": "Navigation principale",
+  "core.nav.home": "Accueil",
+  "core.nav.admin": "Administration",
+  "core.header.logout": "Se déconnecter",
+  "core.header.account": "Connecté en tant que {name}",
+  "core.theme.label": "Thème d'affichage",
+  "core.theme.auto": "Automatique",
+  "core.theme.light": "Clair",
+  "core.theme.dark": "Sombre",
+  "core.role.reader": "Lecteur",
+  "core.role.editor": "Éditeur",
+  "core.role.admin": "Administrateur",
+
+  // ── Bandeaux
+  "core.banner.preparation": "Communauté en préparation : seuls les administrateurs et les éditeurs y ont accès.",
+  "core.banner.preparation.link": "Gérer le statut",
+  "core.banner.preview": "Aperçu : vous voyez la communauté comme un lecteur.",
+  "core.banner.preview.exit": "Quitter l'aperçu",
+
+  // ── Page d'accueil
+  "core.home.greeting": "Bonjour {name}",
+  "core.home.blocks": "À découvrir",
+  "core.home.empty.title": "Rien à afficher pour le moment",
+  "core.home.empty.text": "Les contenus apparaîtront ici dès qu'ils seront publiés.",
+  "core.block.open": "Ouvrir",
+
+  // ── Connexion
+  "core.login.title": "Connexion",
+  "core.login.email": "Adresse e-mail",
+  "core.login.password": "Mot de passe",
+  "core.login.submit": "Se connecter",
+  "core.login.help": "Pas encore de compte, ou mot de passe oublié ? Adressez-vous à un administrateur de la communauté.",
+  "core.login.error.invalid": "Adresse e-mail ou mot de passe incorrect.",
+  "core.login.error.locked": "Trop d'essais. Réessayez dans quelques minutes.",
+
+  // ── Installation (création du premier compte)
+  "core.setup.title": "Installation",
+  "core.setup.intro":
+    "Créez le compte administrateur de cette installation. Vous pourrez ensuite paramétrer la communauté et inviter ses membres.",
+  "core.setup.communityName": "Nom de la communauté",
+  "core.setup.name": "Votre nom",
+  "core.setup.email": "Votre adresse e-mail",
+  "core.setup.password": "Mot de passe",
+  "core.setup.passwordHint": "{min} caractères au minimum. Une phrase facile à retenir est un bon choix.",
+  "core.setup.code": "Code d'installation",
+  "core.setup.codeHint": "Le code défini au déploiement (réglage SETUP_CODE).",
+  "core.setup.submit": "Créer le compte administrateur",
+  "core.setup.error.code": "Code d'installation incorrect.",
+  "core.setup.error.codeMissing":
+    "Par sécurité, l'installation est bloquée tant que le réglage SETUP_CODE n'est pas défini sur le serveur.",
+  "core.setup.error.password": "Le mot de passe doit contenir au moins {min} caractères.",
+  "core.setup.error.communityName": "Indiquez le nom de la communauté.",
+
+  // ── Invitation (choix du mot de passe)
+  "core.invitation.title": "Bienvenue",
+  "core.invitation.intro": "Bonjour {name}, choisissez votre mot de passe pour entrer dans {community}.",
+  "core.invitation.password": "Mot de passe",
+  "core.invitation.confirm": "Confirmer le mot de passe",
+  "core.invitation.submit": "Enregistrer et entrer",
+  "core.invitation.error.mismatch": "Les deux mots de passe ne sont pas identiques.",
+  "core.invitation.invalid.title": "Lien non valable",
+  "core.invitation.invalid.text":
+    "Ce lien a déjà été utilisé ou a expiré. Demandez-en un nouveau à un administrateur de la communauté.",
+  "core.invitation.toLogin": "Aller à la page de connexion",
+
+  // ── Communauté pas encore ouverte
+  "core.soon.title": "Ouverture prochaine",
+  "core.soon.text": "Cette communauté est en cours de préparation. Vous pourrez y entrer dès son ouverture.",
+
+  // ── Administration : accueil
+  "core.admin.title": "Administration",
+  "core.admin.intro": "Gérez les contenus et le paramétrage de la communauté.",
+  "core.admin.back": "Administration",
+  "core.admin.empty": "Aucun écran d'administration n'est disponible pour votre rôle.",
+
+  // ── Administration : modules
+  "core.admin.modules.title": "Modules",
+  "core.admin.modules.description": "Choisir les fonctionnalités proposées aux membres.",
+  "core.admin.modules.intro":
+    "Chaque module peut être activé ou désactivé à tout moment. Au moins un module doit rester actif.",
+  "core.admin.modules.active": "Actif",
+  "core.admin.modules.inactive": "Inactif",
+  "core.admin.modules.enable": "Activer",
+  "core.admin.modules.disable": "Désactiver",
+  "core.admin.modules.requires": "Nécessite : {modules}",
+  "core.admin.modules.confirm.title": "Désactiver « {module} » ?",
+  "core.admin.modules.confirm.text":
+    "Le module disparaîtra des menus, de la page d'accueil et de l'administration. Ses contenus et ses réglages sont conservés : ils réapparaîtront à l'identique si vous le réactivez.",
+  "core.admin.modules.error.last-active-module": "Impossible : au moins un module doit rester actif.",
+  "core.admin.modules.error.unknown-module": "Module inconnu.",
+  "core.admin.modules.error.missing-requirement": "Ce module en prolonge un autre, qui doit d'abord être activé.",
+
+  // ── Administration : paramètres
+  "core.admin.settings.title": "Paramètres",
+  "core.admin.settings.description": "Statut de la communauté, aperçu lecteur, identité et apparence.",
+  "core.admin.settings.status.title": "Statut",
+  "core.admin.settings.status.preparation": "En préparation",
+  "core.admin.settings.status.open": "Ouverte",
+  "core.admin.settings.status.preparationHelp":
+    "Seuls les administrateurs et les éditeurs peuvent entrer. Les lecteurs voient un message d'attente.",
+  "core.admin.settings.status.openHelp": "Tous les membres peuvent entrer.",
+  "core.admin.settings.status.openAction": "Ouvrir la communauté",
+  "core.admin.settings.status.closeAction": "Repasser en préparation",
+  "core.admin.settings.status.confirmOpen.title": "Ouvrir la communauté ?",
+  "core.admin.settings.status.confirmOpen.text": "Tous les membres invités pourront y entrer immédiatement.",
+  "core.admin.settings.status.confirmClose.title": "Repasser en préparation ?",
+  "core.admin.settings.status.confirmClose.text":
+    "Les lecteurs ne pourront plus entrer tant que la communauté ne sera pas rouverte.",
+  "core.admin.settings.preview.title": "Aperçu lecteur",
+  "core.admin.settings.preview.text":
+    "Parcourez la communauté telle qu'un lecteur la voit : sans administration, avec les seuls modules actifs.",
+  "core.admin.settings.preview.action": "Prévisualiser comme un lecteur",
+  "core.admin.settings.identity.title": "Identité et apparence",
+  "core.admin.settings.identity.note":
+    "Ces éléments viennent du pack chargé à l'installation. Leur modification à l'écran arrivera avec l'assistant de configuration.",
+  "core.admin.settings.identity.name": "Nom",
+  "core.admin.settings.identity.subtitle": "Sous-titre",
+  "core.admin.settings.identity.font": "Police",
+  "core.admin.settings.identity.primary": "Couleur principale",
+  "core.admin.settings.identity.accent": "Couleur secondaire",
+  "core.admin.settings.identity.vocabulary": "Vocabulaire",
+  "core.admin.settings.identity.categories": "Catégories",
+  "core.admin.settings.identity.retention": "Conservation du journal d'activité",
+  "core.admin.settings.identity.retentionValue": "{months} mois",
+  "core.admin.settings.identity.none": "Aucune",
+  "core.font.systeme": "Système",
+  "core.font.humaniste": "Humaniste",
+  "core.font.geometrique": "Géométrique",
+  "core.font.arrondie": "Arrondie",
+  "core.font.serif": "Sérif",
+  "core.font.classique": "Classique",
+
+  // ── Administration : utilisateurs
+  "core.admin.users.title": "Utilisateurs",
+  "core.admin.users.description": "Créer les comptes, attribuer les rôles, envoyer les invitations.",
+  "core.admin.users.create.title": "Créer un compte",
+  "core.admin.users.create.name": "Nom",
+  "core.admin.users.create.email": "Adresse e-mail",
+  "core.admin.users.create.role": "Rôle",
+  "core.admin.users.create.submit": "Créer et inviter",
+  "core.admin.users.create.done":
+    "Compte créé pour {name}. Transmettez-lui ce lien d'invitation : il lui permet de choisir son mot de passe (valable {days} jours).",
+  "core.admin.users.newLink.done":
+    "Nouveau lien d'invitation pour {name}, valable {days} jours. Les liens précédents ne fonctionnent plus.",
+  "core.admin.users.mail.sent": "Le lien lui a aussi été envoyé par e-mail.",
+  "core.admin.users.mail.file":
+    "L'envoi d'e-mails n'est pas configuré : le message a été écrit dans le dossier « emails » du dossier de données.",
+  "core.admin.users.link.label": "Lien d'invitation",
+  "core.admin.users.link.copy": "Copier",
+  "core.admin.users.link.copied": "Copié",
+  "core.admin.users.list.title": "Comptes",
+  "core.admin.users.col.name": "Nom",
+  "core.admin.users.col.role": "Rôle",
+  "core.admin.users.col.status": "État",
+  "core.admin.users.col.actions": "Actions",
+  "core.admin.users.status.active": "Actif",
+  "core.admin.users.status.pending": "Invitation en attente",
+  "core.admin.users.status.disabled": "Désactivé",
+  "core.admin.users.expert": "Expert",
+  "core.admin.users.you": "vous",
+  "core.admin.users.lastLogin": "Dernière connexion : {date}",
+  "core.admin.users.neverLoggedIn": "Jamais connecté",
+  "core.admin.users.action.roleLabel": "Rôle de {name}",
+  "core.admin.users.action.saveRole": "Changer le rôle",
+  "core.admin.users.action.makeExpert": "Marquer expert",
+  "core.admin.users.action.removeExpert": "Retirer expert",
+  "core.admin.users.action.deactivate": "Désactiver",
+  "core.admin.users.action.activate": "Réactiver",
+  "core.admin.users.action.newLink": "Nouveau lien d'invitation",
+  "core.admin.users.confirmDeactivate.title": "Désactiver ce compte ?",
+  "core.admin.users.confirmDeactivate.text":
+    "{name} sera déconnecté immédiatement et ne pourra plus se connecter. Ses données sont conservées.",
+  "core.admin.users.error.email-taken": "Un compte existe déjà avec cette adresse e-mail.",
+  "core.admin.users.error.invalid-email": "Adresse e-mail invalide.",
+  "core.admin.users.error.invalid-name": "Le nom est obligatoire (100 caractères au maximum).",
+  "core.admin.users.error.invalid-role": "Rôle inconnu.",
+  "core.admin.users.error.last-admin": "Il doit rester au moins un administrateur actif.",
+  "core.admin.users.error.self-change": "Vous ne pouvez pas modifier votre propre compte depuis cet écran.",
+  "core.admin.users.error.unknown-user": "Ce compte n'existe plus.",
+  "core.admin.users.error.already-installed": "L'installation a déjà été faite : connectez-vous.",
+
+  // ── Administration : état technique
+  "core.admin.technical.title": "État technique",
+  "core.admin.technical.description": "Journal d'activité, tâches planifiées et notifications.",
+  "core.admin.technical.activity.title": "Journal d'activité",
+  "core.admin.technical.activity.intro":
+    "Les événements sont enregistrés sous pseudonyme : aucun nom n'y figure. Durée de conservation : {months} mois.",
+  "core.admin.technical.activity.summary": "Sur les 30 derniers jours",
+  "core.admin.technical.activity.distinct": "{count} personne(s) distincte(s)",
+  "core.admin.technical.activity.latest": "Derniers événements",
+  "core.admin.technical.activity.empty": "Aucun événement enregistré.",
+  "core.admin.technical.col.date": "Date",
+  "core.admin.technical.col.type": "Type",
+  "core.admin.technical.col.count": "Nombre",
+  "core.admin.technical.col.actor": "Pseudonyme",
+  "core.admin.technical.col.details": "Détails",
+  "core.admin.technical.col.next": "Prochaine exécution",
+  "core.admin.technical.col.last": "Dernière exécution",
+  "core.admin.technical.col.status": "État",
+  "core.admin.technical.col.error": "Dernière erreur",
+  "core.admin.technical.col.event": "Événement",
+  "core.admin.technical.col.attempts": "Essais",
+  "core.admin.technical.jobs.title": "Tâches planifiées",
+  "core.admin.technical.jobs.intro": "L'application exécute ces tâches automatiquement. Le bouton les déclenche sans attendre.",
+  "core.admin.technical.jobs.run": "Exécuter maintenant",
+  "core.admin.technical.jobs.ran": "Exécution terminée : {succeeded} réussie(s), {failed} en échec, {skipped} ignorée(s).",
+  "core.admin.technical.jobs.everyMinutes": "toutes les {count} min",
+  "core.admin.technical.jobs.everyHours": "toutes les {count} h",
+  "core.admin.technical.jobs.everyDay": "une fois par jour",
+  "core.admin.technical.jobs.empty": "Aucune tâche enregistrée pour le moment.",
+  "core.admin.technical.notifications.title": "Notifications",
+  "core.admin.technical.notifications.empty": "Aucune notification.",
+  "core.status.pending": "En attente",
+  "core.status.running": "En cours",
+  "core.status.done": "Terminée",
+  "core.status.failed": "En échec",
+  "core.status.sent": "Envoyée",
+  "core.activity.authLogin": "Connexion",
+  "core.activity.moduleView": "Ouverture d'un module",
+  "core.job.activityPurge": "Purge du journal d'activité",
+  "core.job.notificationsDispatch": "Envoi des notifications",
+  "core.job.authCleanup": "Nettoyage des sessions",
+  "core.notification.userInvited": "Invitation d'un membre",
+
+  // ── E-mails
+  "core.mail.invitation.subject": "Votre accès à {community}",
+  "core.mail.invitation.body":
+    "Bonjour {name},\n\nUn compte a été créé pour vous sur {community}.\nPour choisir votre mot de passe et entrer, ouvrez ce lien (valable {days} jours) :\n\n{link}\n\nSi vous n'attendiez pas ce message, vous pouvez l'ignorer.",
+};

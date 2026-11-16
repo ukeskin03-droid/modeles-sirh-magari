@@ -1,0 +1,40 @@
+{
+  "formatVersion": 1,
+  "identity": {
+    "name": "Ma copropriété",
+    "subtitle": "Les informations utiles aux copropriétaires",
+    "logo": "media/logo.svg",
+    "favicon": "media/logo.svg"
+  },
+  "theme": {
+    "colors": { "primary": "#8a3b2a", "accent": "#2e6b4f" },
+    "font": "serif"
+  },
+  "vocabulary": {
+    "news.item": { "singular": "Info syndic", "plural": "Infos syndic" }
+  },
+  "modules": {
+    "news": { "enabled": true },
+    "quiz": { "enabled": true },
+    "knowledge": { "enabled": false }
+  },
+  "categories": [
+    {
+      "slug": "vie-de-l-immeuble",
+      "name": "Vie de l'immeuble",
+      "children": [
+        { "slug": "parties-communes", "name": "Parties communes" },
+        { "slug": "voisinage", "name": "Voisinage" }
+      ]
+    },
+    { "slug": "assemblee-generale", "name": "Assemblée générale" },
+    { "slug": "charges-et-budget", "name": "Charges et budget" },
+    { "slug": "travaux", "name": "Travaux" }
+  ],
+  "home": {
+    "welcomeTitle": "Bienvenue dans l'espace de la copropriété",
+    "welcomeText": "[CONTENU D'EXEMPLE — À VALIDER] Suivez les infos du syndic et testez vos connaissances sur la vie de la copropriété.",
+    "blocks": ["quiz.featured", "news.latest"]
+  },
+  "settings": { "activityRetentionMonths": 6, "sharePreview": "full" }
+}

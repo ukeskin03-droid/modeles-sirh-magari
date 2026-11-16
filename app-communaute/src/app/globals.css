@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+/*
+ * COULEURS ET POLICE
+ *
+ * Les composants utilisent des noms de couleurs (bg-primary, text-muted, border-line…).
+ * Ces noms pointent vers des variables (--c-…) dont les valeurs sont calculées pour
+ * chaque communauté et servies par /theme.css (voir src/core/theme/build.ts).
+ * Ainsi, changer les couleurs d'une communauté ne demande aucune modification ici.
+ */
+@theme inline {
+  --color-bg: var(--c-bg);
+  --color-surface: var(--c-surface);
+  --color-surface-2: var(--c-surface-2);
+  --color-line: var(--c-line);
+  --color-fg: var(--c-fg);
+  --color-muted: var(--c-muted);
+
+  --color-primary: var(--c-primary);
+  --color-on-primary: var(--c-on-primary);
+  --color-primary-text: var(--c-primary-text);
+  --color-primary-soft: var(--c-primary-soft);
+
+  --color-accent: var(--c-accent);
+  --color-on-accent: var(--c-on-accent);
+  --color-accent-text: var(--c-accent-text);
+  --color-accent-soft: var(--c-accent-soft);
+
+  --color-danger: var(--c-danger);
+  --color-on-danger: var(--c-on-danger);
+  --color-danger-text: var(--c-danger-text);
+  --color-danger-soft: var(--c-danger-soft);
+
+  --color-success-text: var(--c-success-text);
+  --color-success-soft: var(--c-success-soft);
+  --color-warning-text: var(--c-warning-text);
+  --color-warning-soft: var(--c-warning-soft);
+
+  --font-sans: var(--font-app);
+}
+
+/* Valeurs de secours, utilisées seulement si /theme.css n'a pas pu être chargée. */
+:root {
+  --c-bg: #f7f8fa;
+  --c-surface: #ffffff;
+  --c-surface-2: #eef0f3;
+  --c-line: #d3d7de;
+  --c-fg: #1c2129;
+  --c-muted: #5b6370;
+  --c-primary: #2f5d8a;
+  --c-on-primary: #ffffff;
+  --c-primary-text: #2f5d8a;
+  --c-primary-soft: #e6eef6;
+  --c-accent: #b4541a;
+  --c-on-accent: #ffffff;
+  --c-accent-text: #9c4612;
+  --c-accent-soft: #f9ebe1;
+  --c-danger: #c62828;
+  --c-on-danger: #ffffff;
+  --c-danger-text: #b3261e;
+  --c-danger-soft: #fbe9e7;
+  --c-success-text: #1b7f3b;
+  --c-success-soft: #e3f4e8;
+  --c-warning-text: #8a5d00;
+  --c-warning-soft: #fbf0d9;
+  --font-app: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+html {
+  /* Évite que le contenu saute quand la barre de défilement apparaît. */
+  scrollbar-gutter: stable;
+}
+
+body {
+  background: var(--c-bg);
+  color: var(--c-fg);
+  font-family: var(--font-app);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Accessibilité : un contour net autour de l'élément qui a le focus au clavier. */
+:focus-visible {
+  outline: 2px solid var(--c-primary-text);
+  outline-offset: 2px;
+}
+
+/* Lien « Aller au contenu » : invisible, sauf quand on y arrive au clavier. */
+.skip-link {
+  position: absolute;
+  left: 0.75rem;
+  top: -4rem;
+  z-index: 50;
+  border-radius: 0.5rem;
+  background: var(--c-primary);
+  color: var(--c-on-primary);
+  padding: 0.5rem 0.875rem;
+  font-weight: 600;
+}
+.skip-link:focus {
+  top: 0.75rem;
+}
+
+/* Accessibilité : pas d'animation pour les personnes qui ont demandé à les réduire. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

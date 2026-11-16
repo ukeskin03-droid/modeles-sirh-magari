@@ -1,0 +1,46 @@
+{
+  "formatVersion": 1,
+  "identity": {
+    "name": "Communauté PeopleDoc",
+    "subtitle": "Entraide et bonnes pratiques autour de PeopleDoc (UKG HRSD)",
+    "logo": "media/logo.svg",
+    "favicon": "media/logo.svg"
+  },
+  "theme": {
+    "colors": { "primary": "#0f6e73", "accent": "#c2571a" },
+    "font": "humaniste"
+  },
+  "vocabulary": {
+    "knowledge.article": { "singular": "Fiche", "plural": "Fiches" }
+  },
+  "modules": {
+    "news": { "enabled": true },
+    "quiz": { "enabled": true },
+    "knowledge": { "enabled": true }
+  },
+  "categories": [
+    {
+      "slug": "gestion-documentaire",
+      "name": "Gestion documentaire",
+      "children": [
+        { "slug": "classement", "name": "Classement" },
+        { "slug": "conservation", "name": "Conservation" }
+      ]
+    },
+    {
+      "slug": "demandes",
+      "name": "Demandes",
+      "children": [
+        { "slug": "formulaires", "name": "Formulaires" },
+        { "slug": "traitement", "name": "Traitement" }
+      ]
+    },
+    { "slug": "administration", "name": "Administration", "children": [{ "slug": "roles-et-droits", "name": "Rôles et droits" }] }
+  ],
+  "home": {
+    "welcomeTitle": "Bienvenue dans la communauté PeopleDoc",
+    "welcomeText": "[CONTENU D'EXEMPLE — À VALIDER] Retrouvez ici les actualités de la communauté, les fiches pratiques et des quiz pour tester vos connaissances.",
+    "blocks": ["news.latest", "knowledge.latest", "quiz.featured"]
+  },
+  "settings": { "activityRetentionMonths": 12, "sharePreview": "full" }
+}

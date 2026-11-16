@@ -1,0 +1,238 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// SCHÉMA DU MOTEUR
+//
+// Ce fichier décrit les tables communes à toute l'application. Chaque module
+// ajoutera son propre fichier dans ce dossier (quiz.prisma, actualites.prisma…).
+//
+// Après toute modification : « npm run db:evoluer » crée le fichier de migration,
+// qui sera appliqué automatiquement au prochain démarrage de chaque installation.
+//
+// Règle de compatibilité : on n'utilise que des fonctions communes à SQLite et à
+// PostgreSQL. Les listes de valeurs (rôle, statut…) sont donc de simples textes,
+// dont les valeurs autorisées sont indiquées en commentaire et contrôlées par le code.
+// ─────────────────────────────────────────────────────────────────────────────
+
+generator client {
+  provider = "prisma-client"
+  output   = "../../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+// ── Configuration de la communauté ──────────────────────────────────────────
+
+/// La configuration de LA communauté de cette installation : une seule ligne (id = 1).
+model Community {
+  id             Int      @id
+  name           String
+  subtitle       String   @default("")
+  /// "preparation" (visible des administrateurs et éditeurs) ou "open" (ouverte aux membres)
+  status         String   @default("preparation")
+  logoMediaId    String?
+  faviconMediaId String?
+  /// Couleurs et police (voir src/core/community/schema.ts)
+  theme          Json
+  /// Termes renommés par la communauté, ex. { "news.item": { singular, plural } }
+  vocabulary     Json
+  /// Texte d'accueil et ordre des blocs de la page d'accueil
+  home           Json
+  /// Autres réglages : durée de conservation du journal, aperçu de partage…
+  settings       Json
+  /// Étape en cours de l'assistant de configuration (vide = assistant terminé)
+  setupStep      Int?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+/// État d'un module : une ligne par module. Désactiver un module ne change QUE
+/// la colonne « enabled » : ses contenus et ses réglages sont conservés.
+model ModuleState {
+  key       String   @id
+  enabled   Boolean
+  settings  Json
+  updatedAt DateTime @updatedAt
+}
+
+/// Catégories, sur deux niveaux au maximum, partagées par tous les modules.
+model Category {
+  id       String     @id @default(cuid())
+  /// Identifiant stable et lisible, utilisé dans les packs : "parent" ou "parent/enfant"
+  path     String     @unique
+  name     String
+  position Int        @default(0)
+  parentId String?
+  parent   Category?  @relation("CategoryTree", fields: [parentId], references: [id], onDelete: Cascade)
+  children Category[] @relation("CategoryTree")
+}
+
+/// Fichiers de la médiathèque (logo, favicon, puis images des contenus).
+model Media {
+  id         String   @id @default(cuid())
+  filename   String
+  mimeType   String
+  size       Int
+  alt        String   @default("")
+  /// Nom du fichier dans le stockage (dossier de données ou stockage objet)
+  storageKey String   @unique
+  /// Vrai pour les images visibles sans connexion (logo, favicon)
+  isPublic   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+// ── Utilisateurs et connexion ───────────────────────────────────────────────
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String
+  /// Vide tant que la personne n'a pas choisi son mot de passe (invitation en attente),
+  /// ou si elle se connecte par un fournisseur externe (Microsoft 365, plus tard).
+  passwordHash String?
+  /// "reader" (lecteur), "editor" (éditeur) ou "admin" (administrateur)
+  role         String    @default("reader")
+  /// Attribut « Expert », utilisé par le lot 3
+  isExpert     Boolean   @default(false)
+  /// Faux = compte désactivé : la personne ne peut plus se connecter
+  active       Boolean   @default(true)
+  createdAt    DateTime  @default(now())
+  lastLoginAt  DateTime?
+
+  sessions      Session[]
+  invitations   Invitation[]
+  accounts      Account[]
+  groups        GroupMember[]
+  notifications Notification[]
+}
+
+/// Compte chez un fournisseur de connexion externe. Vide en V1 : la table est
+/// prête pour brancher Microsoft 365 sans migration des utilisateurs.
+model Account {
+  id                String @id @default(cuid())
+  userId            String
+  provider          String
+  providerAccountId String
+  user              User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+/// Session de connexion. On ne stocke que l'empreinte du jeton, jamais le jeton.
+model Session {
+  id              String   @id @default(cuid())
+  tokenHash       String   @unique
+  userId          String
+  expiresAt       DateTime
+  /// Vrai quand un administrateur utilise « Prévisualiser comme un lecteur »
+  previewAsReader Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+/// Lien d'invitation : il permet à un membre de choisir (ou de rechoisir) son mot de passe.
+model Invitation {
+  id        String    @id @default(cuid())
+  userId    String
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+/// Tentatives de connexion échouées, pour bloquer les essais répétés de mots de passe.
+model LoginAttempt {
+  id        Int      @id @default(autoincrement())
+  email     String
+  createdAt DateTime @default(now())
+
+  @@index([email, createdAt])
+}
+
+/// Groupes d'utilisateurs (ex. un client, un bâtiment). Fondation du lot 2 :
+/// la table existe dès la V1, l'interface de gestion et le ciblage arrivent avec le lot.
+model Group {
+  id          String        @id @default(cuid())
+  name        String        @unique
+  description String        @default("")
+  members     GroupMember[]
+}
+
+model GroupMember {
+  groupId String
+  userId  String
+  group   Group  @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([groupId, userId])
+}
+
+// ── Fondations des lots ─────────────────────────────────────────────────────
+
+/// Journal d'activité. « actor » est un PSEUDONYME calculé à partir du compte et
+/// du secret de l'application : il permet de compter des personnes distinctes sans
+/// pouvoir afficher qui a fait quoi (voir src/core/activity/log.ts).
+model ActivityEvent {
+  id          Int      @id @default(autoincrement())
+  /// Ex. "auth.login", "module.view", puis "content.view", "quiz.answer", "search.query"…
+  type        String
+  /// Contenu concerné, désigné par un couple (type, identifiant), ex. ("news.item", "42")
+  contentType String?
+  contentId   String?
+  actor       String?
+  /// Détails propres au type d'événement (texte recherché, nombre de résultats…)
+  meta        Json?
+  createdAt   DateTime @default(now())
+
+  @@index([type, createdAt])
+  @@index([contentType, contentId])
+  @@index([createdAt])
+}
+
+/// File d'attente du service de notifications (e-mail en premier).
+model Notification {
+  id           String    @id @default(cuid())
+  userId       String
+  /// Canal d'envoi : "email" (d'autres canaux pourront s'ajouter)
+  channel      String    @default("email")
+  /// Événement déclencheur, ex. "user.invited"
+  event        String
+  /// Données nécessaires à la rédaction du message (vidées après l'envoi)
+  payload      Json
+  /// "pending" (à envoyer), "sent" (envoyée) ou "failed" (abandonnée après plusieurs échecs)
+  status       String    @default("pending")
+  attempts     Int       @default(0)
+  lastError    String?
+  scheduledFor DateTime  @default(now())
+  sentAt       DateTime?
+  createdAt    DateTime  @default(now())
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([status, scheduledFor])
+}
+
+/// Tâches planifiées. Une tâche « récurrente » (everyMinutes renseigné) est
+/// reprogrammée après chaque exécution ; une tâche ponctuelle passe à "done".
+model Job {
+  id           String    @id @default(cuid())
+  /// Type de tâche, ex. "activity.purge". Le code associé est déclaré dans le registre.
+  type         String
+  /// Renseigné pour les tâches récurrentes du système, pour n'en créer qu'un exemplaire
+  uniqueKey    String?   @unique
+  payload      Json
+  runAt        DateTime
+  everyMinutes Int?
+  /// "pending" (en attente), "running" (en cours), "done" (terminée) ou "failed" (abandonnée)
+  status       String    @default("pending")
+  attempts     Int       @default(0)
+  lastError    String?
+  lastRunAt    DateTime?
+  createdAt    DateTime  @default(now())
+
+  @@index([status, runAt])
+}

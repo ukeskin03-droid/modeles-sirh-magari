@@ -1,0 +1,27 @@
+# Dépendances installées par « npm install »
+/node_modules
+
+# Fichiers produits par Next.js et par les tests
+/.next/
+/out/
+/build
+/coverage
+*.tsbuildinfo
+next-env.d.ts
+
+# Code généré automatiquement par Prisma à partir du schéma (recréé par « npm install »)
+/src/generated/
+
+# Données des communautés : base, images, e-mails de développement, secret.
+# Elles ne doivent JAMAIS être versionnées.
+/donnees/
+
+# Réglages locaux (secrets). Le modèle .env.example, lui, est versionné.
+.env*
+!.env.example
+
+# Divers
+.DS_Store
+*.pem
+npm-debug.log*
+/.test-data/
