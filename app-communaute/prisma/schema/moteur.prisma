@@ -254,3 +254,23 @@ model ContentLink {
   @@index([fromType, fromId])
   @@index([toType, toId])
 }
+
+/// Mots-clés (tags), propres à la communauté et utilisables par tous les modules.
+model Tag {
+  id       String       @id @default(cuid())
+  /// Forme normalisée (minuscules, sans accents), utilisée dans les adresses
+  slug     String       @unique
+  name     String
+  contents ContentTag[]
+}
+
+/// Rattachement d'un mot-clé à un contenu, désigné par un couple (type, identifiant).
+model ContentTag {
+  tagId       String
+  contentType String
+  contentId   String
+  tag         Tag    @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([tagId, contentType, contentId])
+  @@index([contentType, contentId])
+}

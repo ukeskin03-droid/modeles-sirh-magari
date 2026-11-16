@@ -4,12 +4,14 @@
  * C'est ici, et seulement ici, que le module déclare ce qu'il apporte à l'application.
  * La signification de chaque rubrique est expliquée dans src/core/modules/types.ts.
  *
- * Phase 2 : le module est une « coquille » — il s'active, se désactive et apparaît
- * partout où il le doit, mais ses écrans sont encore vides. Ils arrivent en phase 5,
- * avec le type de contenu « article ».
+ *
+ * Ce module est OPTIONNEL : une communauté fonctionne entièrement sans lui. Quand il est
+ * actif, il se branche sur d'autres modules par la rubrique « linkedFields ».
  */
 import type { ModuleDefinition } from "@/core/modules/types";
+import { knowledgeContentTypes, knowledgeLinkedFields } from "./content";
 import { knowledgeLabels } from "./labels.fr";
+import { knowledgePackSections } from "./pack";
 import { KnowledgeHomeBlock } from "./ui/KnowledgeHomeBlock";
 
 export const knowledgeModule: ModuleDefinition = {
@@ -44,9 +46,9 @@ export const knowledgeModule: ModuleDefinition = {
   // Gérer les contenus du module : éditeurs et administrateurs
   actions: [{ key: "knowledge.manage", minRole: "editor" }],
 
-  contentTypes: [],
-  packSections: [],
-  linkedFields: [],
+  contentTypes: knowledgeContentTypes,
+  packSections: knowledgePackSections,
+  linkedFields: knowledgeLinkedFields,
 
   activityEvents: [],
   notificationEvents: [],

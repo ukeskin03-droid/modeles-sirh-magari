@@ -4,6 +4,7 @@
  * ACTUALITÉS — actions déclenchées par les formulaires d'administration.
  */
 import { redirect } from "next/navigation";
+import { saveLinkedFields } from "@/core/content/linked-fields";
 import { fromDateTimeInput } from "@/core/i18n/format";
 import { getT, requireModuleCan } from "@/core/request/context";
 import type { FormState } from "@/core/ui/forms";
@@ -28,7 +29,8 @@ export async function saveNewsAction(_state: FormState, data: FormData): Promise
   const issues = checkNews(input);
   if (issues.length > 0) return { error: issues.map((issue) => t(issue.key, issue.params)).join(" ") };
 
-  await saveNews(text(data, "id") || null, input, { authorId: viewer.id });
+  const id = await saveNews(text(data, "id") || null, input, { authorId: viewer.id });
+  await saveLinkedFields("news.item", id, data);
   redirect("/admin/actualites");
 }
 

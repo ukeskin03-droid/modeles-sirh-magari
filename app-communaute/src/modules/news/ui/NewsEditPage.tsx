@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { listCategories } from "@/core/categories/service";
+import { LinkedFieldsEditor } from "@/core/content/linked-fields";
 import { toDateTimeInput } from "@/core/i18n/format";
 import { getT } from "@/core/request/context";
 import { ButtonLink, Card, categoryOptions, Field, PageContainer, PageHeader, SelectField, TextAreaField } from "@/core/ui/elements";
@@ -41,6 +42,8 @@ export async function NewsEditPage({ params }: { params: Promise<{ id?: string }
             <input type="checkbox" name="pinned" defaultChecked={item?.pinned ?? false} className="size-5 accent-(--c-primary)" />
             {t("news.form.pinned")}
           </label>
+          {/* Champs ajoutés par d'autres modules actifs. Sans module concerné : rien ne s'affiche. */}
+          <LinkedFieldsEditor hostType="news.item" hostId={item?.id ?? null} />
           <div className="flex flex-wrap gap-3">
             <SubmitButton>{t("core.form.save")}</SubmitButton>
             <ButtonLink href="/admin/actualites" variant="secondary">

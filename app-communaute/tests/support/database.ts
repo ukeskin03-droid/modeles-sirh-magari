@@ -4,6 +4,9 @@ import { db } from "@/core/db/client";
 export async function resetDatabase(): Promise<void> {
   const client = db();
   await client.contentLink.deleteMany();
+  await client.contentTag.deleteMany();
+  await client.tag.deleteMany();
+  await client.article.deleteMany();
   await client.newsItem.deleteMany();
   await client.quiz.deleteMany();
   await client.question.deleteMany();

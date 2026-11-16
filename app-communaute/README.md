@@ -18,7 +18,7 @@ On l'installe une fois par communauté, puis on la paramètre entièrement depui
 | 2. Socle | Projet, base, connexion et rôles, configuration, registre et activation des modules, journal d'activité, notifications, tâches planifiées, page d'accueil | ✅ |
 | 3. Quiz | Banque de questions, quiz manuels ou par tirage, entraînement et évaluation, historique | ✅ |
 | 4. Actualités | Statuts, programmation, expiration, épinglage, badge « Nouveau », contenu Markdown | ✅ |
-| 5. Base de connaissance | | à venir |
+| 5. Base de connaissance | Articles, catégories, mots-clés, articles liés, lien optionnel depuis les questions et les actualités | ✅ |
 | 6. Atelier | Assistant de configuration, éditeurs, médiathèque, imports, export/import .zip | à venir |
 | 7. Finitions | Recherche, pages partageables, « Mes données », documentation complète, image Docker | à venir |
 

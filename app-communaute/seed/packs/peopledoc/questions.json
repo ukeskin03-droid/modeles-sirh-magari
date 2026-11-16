@@ -19,7 +19,10 @@
     ],
     "explanation": "[CONTENU D'EXEMPLE — À VALIDER] Explication à rédiger : elle doit permettre de comprendre la bonne réponse sans autre lecture.",
     "difficulty": 1,
-    "category": "gestion-documentaire/classement"
+    "category": "gestion-documentaire/classement",
+    "links": [
+      "knowledge.article:premiers-pas"
+    ]
   },
   {
     "ref": "q-002",
@@ -76,7 +79,10 @@
     ],
     "explanation": "[CONTENU D'EXEMPLE — À VALIDER] Explication à rédiger : elle doit permettre de comprendre la bonne réponse sans autre lecture.",
     "difficulty": 2,
-    "category": "administration/roles-et-droits"
+    "category": "administration/roles-et-droits",
+    "links": [
+      "knowledge.article:bonnes-pratiques"
+    ]
   },
   {
     "ref": "q-005",
@@ -155,7 +161,10 @@
     ],
     "explanation": "[CONTENU D'EXEMPLE — À VALIDER] Explication à rédiger : elle doit permettre de comprendre la bonne réponse sans autre lecture.",
     "difficulty": 3,
-    "category": "administration/roles-et-droits"
+    "category": "administration/roles-et-droits",
+    "links": [
+      "knowledge.article:questions-frequentes"
+    ]
   },
   {
     "ref": "q-009",

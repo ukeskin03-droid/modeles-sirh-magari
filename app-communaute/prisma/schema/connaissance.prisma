@@ -1,0 +1,29 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// TABLE DU MODULE « BASE DE CONNAISSANCE » (module optionnel)
+//
+// Les tags et les articles liés ne sont pas ici : ils utilisent les tables communes du
+// moteur (Tag, ContentTag, ContentLink).
+// ─────────────────────────────────────────────────────────────────────────────
+
+model Article {
+  id         String   @id @default(cuid())
+  /// Identifiant de l'adresse (/articles/<slug>), figé à la création
+  slug       String   @unique
+  title      String
+  summary    String   @default("")
+  /// Contenu rédigé en Markdown
+  content    String   @default("")
+  categoryId String?
+  /// "draft" (brouillon) ou "published" (publié)
+  status     String   @default("draft")
+  authorId   String?
+  /// Date de dernière mise à jour du contenu, affichée aux lecteurs
+  revisedAt  DateTime @default(now())
+  /// Texte en minuscules et sans accents, pour la recherche
+  searchText String   @default("")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([status, revisedAt])
+  @@index([categoryId])
+}

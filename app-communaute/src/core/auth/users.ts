@@ -156,3 +156,11 @@ export async function setUserExpert(userId: string, isExpert: boolean): Promise<
   const result = await db().user.updateMany({ where: { id: userId }, data: { isExpert } });
   if (result.count === 0) throw new UserRuleError("unknown-user");
 }
+
+/** Noms d'affichage de plusieurs comptes (ex. l'auteur d'un contenu) : identifiant → nom. */
+export async function displayNames(userIds: readonly (string | null)[]): Promise<Map<string, string>> {
+  const ids = [...new Set(userIds.filter((id): id is string => Boolean(id)))];
+  if (ids.length === 0) return new Map();
+  const users = await db().user.findMany({ where: { id: { in: ids } }, select: { id: true, name: true } });
+  return new Map(users.map((user) => [user.id, user.name]));
+}
