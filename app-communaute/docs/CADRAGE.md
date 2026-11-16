@@ -1,15 +1,15 @@
 # Cadrage — Phase 1 de la V1
 
 > Document de cadrage rédigé à partir de `SPEC.md`. **Aucun code n'a été écrit à cette étape.**
-> Version 2 : intègre ta précision « une application = une communauté, que je duplique pour la suivante ».
+> Version 3 : intègre ta précision « une application = une communauté, que je duplique pour la suivante » et tes réponses aux questions (§ 3).
 > Là où ce document s'écarte de `SPEC.md` (§ 2), c'est lui qui fait foi.
-> Statut : en attente de ta validation et de tes réponses aux 4 questions (§ 3).
+> Statut : en attente de ton feu vert pour démarrer la phase 2.
 
 ## Sommaire
 
 1. [Ce que j'ai compris](#1-ce-que-jai-compris)
 2. [Ce que ta précision change par rapport à la spec](#2-ce-que-ta-précision-change-par-rapport-à-la-spec)
-3. [Mes questions](#3-mes-questions)
+3. [Décisions prises](#3-décisions-prises)
 4. [Hypothèses que je retiens sauf avis contraire](#4-hypothèses-que-je-retiens-sauf-avis-contraire)
 5. [Stack technique et hébergement](#5-stack-technique-et-hébergement)
 6. [Architecture](#6-architecture)
@@ -54,7 +54,7 @@ C'est important pour la suite : si chaque communauté avait sa propre copie du c
 ### Ce que ce choix te fait gagner, et ce qu'il coûte
 
 - **Gains** : cloisonnement total entre communautés (aucun risque qu'un copropriétaire aperçoive un contenu client), une adresse et une identité par communauté, un code nettement plus simple à lire et à maintenir.
-- **Coût** : créer une communauté n'est plus « deux minutes dans l'interface » mais **une nouvelle installation chez l'hébergeur**, puis le paramétrage dans l'interface. Et une mise à jour s'applique à chaque installation. D'où l'importance de la question d'hébergement (Q1).
+- **Coût** : créer une communauté n'est plus « deux minutes dans l'interface » mais **une nouvelle installation chez l'hébergeur**, puis le paramétrage dans l'interface. Et une mise à jour s'applique à chaque installation. D'où l'importance du choix d'hébergement (§ 3).
 
 ---
 
@@ -79,40 +79,22 @@ Tout le reste de la spec est inchangé : modularité, registre, fondations des l
 
 ---
 
-## 3. Mes questions
+## 3. Décisions prises
 
-Ta précision répond à l'une de mes cinq questions (« une seule installation pour tout le monde ? »). Il en reste quatre. Pour chacune je donne ma recommandation : tu peux répondre « OK pour ta recommandation ».
+Tes réponses, et ce que j'en fais.
 
-### Q1 — Hébergement, et combien de communautés ?
-C'est la question la plus structurante, et ton choix « une installation par communauté » la renforce.
+| Sujet | Ta réponse | Ce que je retiens |
+|---|---|---|
+| **Nombre de communautés** | 2 pour le moment | Je conçois pour 2 installations, sans rien qui empêche d'en ajouter. |
+| **Hébergement** | Pas encore décidé | Je construis une application qui tourne en continu, livrée en image Docker, avec une base **SQLite** et les images dans le dossier de données. Cela fonctionne tel quel sur ton poste, sur un serveur Docker et sur un serveur interne. La décision peut attendre, **mais doit être prise avant la première mise en production** (voir ci-dessous). |
+| **Accès** | Donné par l'administrateur | Communauté **privée** : il faut un compte pour lire. Pas d'inscription libre. L'administrateur crée le compte ; le membre reçoit un lien d'invitation pour choisir son mot de passe. Tant que l'e-mail n'est pas configuré, l'administrateur copie ce lien et le transmet lui-même. |
+| **Résultats de quiz nominatifs** | À voir plus tard | En V1 : chaque membre voit son propre historique, les éditeurs voient des chiffres agrégés. Les données nécessaires sont enregistrées de toute façon ; ouvrir une vue nominative plus tard sera un ajout d'écran, pas une refonte. |
+| **Dépôt** | Séparer dans le dépôt actuel | L'application vit dans le dossier **`app-communaute/`**, autonome : rien n'y dépend de `livrables/` et inversement. Le jour où tu voudras un dépôt dédié, ce dossier se déplace tel quel. |
 
-| Option | Ajouter une communauté | Tâches planifiées | Quiz en direct (lot 3) | Effort d'exploitation |
-|---|---|---|---|---|
-| **A. Hébergeur « plateforme » français** (type Clever Cloud ou Scalingo) | Créer une nouvelle application et une nouvelle base chez l'hébergeur, chacune facturée | Simples | Simple | Faible : pas de serveur à administrer |
-| **B. Un serveur Docker** (serveur virtuel en Europe ou serveur interne Magari) qui héberge toutes les communautés, chacune dans son compartiment avec son dossier de données et son adresse | Une commande ; coût supplémentaire quasi nul | Simples | Simple | Moyen : mises à jour et sauvegardes du serveur à ta charge |
-| **C. Vercel** | Nouveau projet + nouvelle base + nouveau stockage | Limitées | Nécessite un service tiers ou un rafraîchissement toutes les 1–2 secondes | Faible, mais 3 services externes **par communauté** |
+### Ce qui reste ouvert
 
-**Ma recommandation : B** si quelqu'un chez Magari peut administrer un serveur, **A** sinon. Je déconseille C. Dans tous les cas je livre une image Docker, qui fonctionne en A, en B et sur un serveur interne.
-
-**Questions : quelle option ? Quelqu'un peut-il administrer un serveur ? Et combien de communautés envisages-tu à terme (2, 5, 20) ?**
-
-### Q2 — Qui peut entrer, et comment obtient-on un compte ?
-- La communauté est-elle **privée** (compte obligatoire pour lire) ou peut-elle être **publique** ?
-- Comment un membre obtient-il son compte : **invitation** par un administrateur, **lien d'inscription**, ou les deux ?
-
-Point lié : pour qu'un lien collé dans WhatsApp affiche un bel aperçu, WhatsApp doit pouvoir lire le titre, le résumé et l'image **sans être connecté**. Sur une communauté privée, le titre et le résumé d'un contenu sont donc visibles par quiconque possède le lien (le contenu lui-même reste protégé).
-
-**Ma recommandation** : réglage « privée / publique » dans les paramètres, privée par défaut ; compte créé par invitation e-mail **ou** par lien d'inscription (pratique à diffuser dans le groupe WhatsApp) ; réglage « aperçu de partage : titre + résumé / aperçu neutre (nom de la communauté seulement) ».
-
-### Q3 — Les animateurs voient-ils les résultats de quiz nominatifs ?
-La spec demande un historique des résultats **par utilisateur** et des statistiques **agrégées**. En V1, un éditeur doit-il pouvoir consulter « Untel a obtenu 6/10 » ?
-
-**Ma recommandation** : non en V1. Chaque membre voit son propre historique ; les éditeurs voient des chiffres agrégés. Le suivi nominatif n'apparaît que là où la spec le prévoit explicitement (accusés de lecture du lot 2, parcours du lot 5), avec information claire du membre.
-
-### Q4 — Où ranger le code ?
-Le dépôt actuel (`modeles-sirh-magari`) contient tes livrables DocGen, sans rapport avec cette application.
-
-**Ma recommandation** : un **dépôt dédié**, qui sera « le modèle ». Toutes les installations s'y alimentent ; on ne crée pas un dépôt par communauté (voir § 1). Si tu préfères rester ici, tout ira dans le dossier `app-communaute/`.
+- **L'hébergement.** Le seul cas qui demandera un travail d'adaptation est un hébergeur « plateforme » sans disque persistant : il faudra alors passer la base sur PostgreSQL et les images sur un stockage objet. C'est prévu par l'architecture (les deux sont derrière une interface), et simple tant qu'il n'y a pas de données réelles à migrer. D'où l'intérêt de décider avant la mise en production.
+- **L'aperçu des liens partagés.** Tu n'as pas tranché ce point. Je suis la spec : par défaut, un lien collé dans WhatsApp ou Teams affiche le titre, le résumé et l'image du contenu, donc ces trois éléments sont lisibles par quiconque possède le lien, même sans compte. Le contenu lui-même reste réservé aux membres. Un réglage dans les paramètres permet de passer à un aperçu neutre (nom de la communauté seulement).
 
 ---
 
@@ -140,7 +122,7 @@ Le dépôt actuel (`modeles-sirh-magari`) contient tes livrables DocGen, sans ra
 
 Trois ajustements, à valider :
 
-1. **Base de données.** Avec une installation par communauté, **SQLite devient un très bon choix en production aussi** si tu retiens l'option B : la base est un simple fichier dans le dossier de données de la communauté. Sauvegarder une communauté, c'est copier son dossier ; il n'y a pas de serveur de base de données à administrer. En option A, ce sera PostgreSQL, géré par l'hébergeur. À savoir : avec Prisma, le fichier de schéma désigne **un seul** type de base, et en changer demande de régénérer les fichiers de migration. Je fixerai donc le type de base une fois pour toutes en phase 2, selon ta réponse à Q1.
+1. **Base de données : SQLite.** Avec une installation par communauté, la base est un simple fichier dans le dossier de données. Sauvegarder une communauté, c'est copier son dossier ; il n'y a pas de serveur de base de données à administrer. À savoir : avec Prisma, le fichier de schéma désigne **un seul** type de base, et en changer demande de régénérer les fichiers de migration. Je n'utiliserai donc que des fonctions communes à SQLite et PostgreSQL, pour que ce passage reste possible si l'hébergement retenu l'impose (§ 3).
 2. **Authentification.** Identifiant + mot de passe en V1, avec une table de comptes prête à accueillir Microsoft 365 (Entra ID) plus tard, sans migration des utilisateurs. La bibliothèque Auth.js convient sur le papier ; je vérifierai son état de maintenance au démarrage de la phase 2 et te signalerai tout écart **avant** d'installer quoi que ce soit.
 3. **E-mail.** Envoi par le protocole standard SMTP, accepté par tous les fournisseurs (y compris Microsoft 365 et les fournisseurs français). En développement, les e-mails sont écrits dans un dossier local au lieu d'être envoyés.
 
@@ -161,7 +143,15 @@ Les versions exactes seront vérifiées en phase 2. Tout ajout ultérieur sera j
 
 ### Contraintes liées à l'hébergement
 
-**Tâches planifiées (lots 2 et 4).** Les tâches à exécuter sont enregistrées en base (« envoyer le récapitulatif lundi à 8 h »). Un point d'entrée unique, protégé par un secret, exécute celles qui sont arrivées à échéance. Il suffit que « quelque chose » l'appelle toutes les minutes : une minuterie interne si l'application tourne en continu (options A et B), ou le planificateur de l'hébergeur (option C). Le reste du code ignore qui déclenche. En V1, aucune fonctionnalité visible n'en dépend (voir H5) : le mécanisme est posé et testé, et sert à purger le journal d'activité.
+L'hébergement reste à choisir (§ 3). Pour mémoire, les trois familles possibles :
+
+| Option | Ajouter une communauté | Tâches planifiées et quiz en direct | Effort d'exploitation |
+|---|---|---|---|
+| **Serveur Docker** (serveur virtuel en Europe ou serveur interne) qui héberge toutes les communautés, chacune avec son dossier de données et son adresse | Une commande ; coût supplémentaire quasi nul | Simples | Moyen : mises à jour et sauvegardes du serveur à ta charge |
+| **Hébergeur « plateforme » français** (type Clever Cloud ou Scalingo) | Une nouvelle application chez l'hébergeur, facturée | Simples | Faible : pas de serveur à administrer. Peut imposer PostgreSQL et un stockage objet |
+| **Vercel** | Nouveau projet + base + stockage | Demandent des contournements | Faible, mais 3 services externes par communauté. **Déconseillé pour ce projet** |
+
+**Tâches planifiées (lots 2 et 4).** Les tâches à exécuter sont enregistrées en base (« envoyer le récapitulatif lundi à 8 h »). Un point d'entrée unique, protégé par un secret, exécute celles qui sont arrivées à échéance. Il suffit que « quelque chose » l'appelle toutes les minutes : une minuterie interne si l'application tourne en continu, ou le planificateur de l'hébergeur sinon. Le reste du code ignore qui déclenche. En V1, aucune fonctionnalité visible n'en dépend (voir H5) : le mécanisme est posé et testé, et sert à purger le journal d'activité.
 
 **Temps réel (quiz en direct, lot 3).** Sur une application qui tourne en continu, le serveur garde une connexion ouverte avec chaque téléphone et y pousse les événements (technique standard des navigateurs, sans service supplémentaire) ; 30 participants ne posent aucune difficulté. Sur Vercel, cette connexion ne peut pas rester ouverte : il faut un service tiers ou des téléphones qui redemandent l'état toutes les 1–2 secondes. Je détaillerai et ferai valider la solution au cadrage du lot 3, comme demandé.
 
@@ -202,7 +192,7 @@ Règle de dépendance : **un module peut utiliser le moteur ; le moteur n'import
 ### Organisation des dossiers
 
 ```
-(le modèle)
+app-communaute/            (le modèle)
 ├── prisma/schema/          un fichier de schéma par module + un pour le moteur
 ├── seed/packs/             les deux packs d'exemple (§ 9)
 ├── src/
@@ -245,7 +235,7 @@ Le segment d'adresse d'un module (`actualites`) reste fixe même si le vocabulai
 
 ### Créer une nouvelle communauté, pas à pas
 
-1. **Créer une installation** du modèle chez l'hébergeur. C'est la seule étape hors interface ; elle sera décrite dans le README et réduite au minimum (une commande en option B, quelques clics en option A).
+1. **Créer une installation** du modèle chez l'hébergeur. C'est la seule étape hors interface ; elle sera décrite dans le README et réduite au minimum (une commande sur un serveur Docker, quelques clics chez un hébergeur « plateforme »).
 2. **Ouvrir l'adresse** de la nouvelle installation et créer le compte administrateur (H1).
 3. **Suivre l'assistant** : partir de zéro, ou importer un pack exporté depuis une autre communauté.
 4. **Prévisualiser comme un lecteur**, puis **ouvrir** la communauté.
@@ -302,9 +292,9 @@ Présentation par familles. Les noms techniques sont en anglais (convention du c
 
 | Table | Contenu | Remarques |
 |---|---|---|
-| **Community** (configuration de la communauté) | nom, sous-titre, statut en préparation/ouverte, logo, favicon, thème, vocabulaire, page d'accueil, réglages (accès privé/public, durée de conservation du journal…), étape en cours de l'assistant | **Une seule ligne.** Thème, vocabulaire et page d'accueil sont des blocs de configuration structurés |
+| **Community** (configuration de la communauté) | nom, sous-titre, statut en préparation/ouverte, logo, favicon, thème, vocabulaire, page d'accueil, réglages (aperçu de partage, durée de conservation du journal…), étape en cours de l'assistant | **Une seule ligne.** Thème, vocabulaire et page d'accueil sont des blocs de configuration structurés |
 | **ModuleState** (état d'un module) | clé du module, activé oui/non, réglages du module | **Le cœur de la modularité** : une ligne par module |
-| **User** (utilisateur) | e-mail, nom, mot de passe chiffré (facultatif), rôle (administrateur / éditeur / lecteur), indicateur « Expert » | Mot de passe facultatif pour accueillir plus tard les comptes Microsoft 365 |
+| **User** (utilisateur) | e-mail, nom, mot de passe chiffré (facultatif), rôle (administrateur / éditeur / lecteur), indicateur « Expert », invitation en cours | Créé par un administrateur. Mot de passe facultatif pour accueillir plus tard les comptes Microsoft 365 |
 | **Account** (compte externe) | fournisseur de connexion, identifiant chez ce fournisseur | Vide en V1 ; prêt pour Microsoft 365 |
 | **Group** / **GroupMember** (groupe / membre) | groupe d'utilisateurs ; ses membres | Fondation du lot 2, sans interface en V1 |
 | **Category** (catégorie) | nom, catégorie parente, position | 2 niveaux maximum ; partagée par tous les modules |
@@ -438,11 +428,11 @@ Chaque lot = de nouveaux dossiers dans `modules/`, de nouvelles tables, de nouve
 
 ## 11. Points d'attention
 
-1. **Créer une installation doit rester simple.** C'est la seule étape hors interface de ton parcours de duplication. Sa facilité dépend directement de l'hébergement (Q1) ; je la traiterai comme une fonctionnalité à part entière, documentée et testée.
+1. **Créer une installation doit rester simple.** C'est la seule étape hors interface de ton parcours de duplication. Sa facilité dépend directement de l'hébergement, encore à choisir (§ 3) ; je la traiterai comme une fonctionnalité à part entière, documentée et testée.
 2. **Ne pas laisser les installations diverger.** Un seul code, des données distinctes (§ 1). Si un jour une communauté a besoin d'un comportement spécifique, il devient un réglage ou un module, pas une copie modifiée du code.
 3. **L'assistant, les éditeurs et les imports (phase 6) sont le plus gros morceau de la V1.** Je proposerai de les valider en deux ou trois démonstrations intermédiaires.
 4. **Éditeur visuel et Markdown.** Le passage visuel ↔ Markdown doit conserver tableaux et images sans perte. Je le vérifierai sur un prototype au tout début de la phase 6.
-5. **Aperçus de partage et communauté privée.** Dépend de ta réponse à Q2.
+5. **Aperçus de partage et communauté privée.** Titre, résumé et image visibles sans compte par défaut, réglable (§ 3).
 6. **Discipline du registre.** La tentation d'écrire « si tel module est actif » dans le moteur reviendra à chaque lot. Deux garde-fous automatiques : le test des imports (§ 6) et un test qui, pour chaque module, l'active puis le désactive et vérifie menus, accueil, recherche, formulaires et adresses.
 
 ---
@@ -453,6 +443,7 @@ Après ta validation, la phase 2 (« Socle ») livrera :
 
 - le projet installable en une commande, avec la base de données ;
 - la création du compte administrateur à la première ouverture, la connexion par identifiant et mot de passe, les trois rôles ;
+- la gestion des utilisateurs par l'administrateur : création d'un compte, lien d'invitation, changement de rôle, désactivation ;
 - la configuration de la communauté (lecture, thème, vocabulaire, statuts en préparation/ouverte) ;
 - le registre de modules et leur activation, avec trois modules « coquilles » (quiz, actualités, base de connaissance) qui n'affichent encore qu'une page vide, pour démontrer que menus, accueil et redirections suivent l'activation ;
 - le journal d'activité, le service de notifications et les tâches planifiées (mécanismes posés et testés) ;
@@ -460,4 +451,4 @@ Après ta validation, la phase 2 (« Socle ») livrera :
 - le script d'amorçage avec les deux packs d'exemple (configuration seule à ce stade ; les contenus arrivent avec chaque module) et la commande qui lance les deux communautés côte à côte ;
 - les premiers tests automatisés : droits par rôle, activation et désactivation de chaque module.
 
-**Pour valider ce cadrage**, il me faut : ta confirmation que j'ai bien compris la duplication (§ 1), tes réponses aux 4 questions (§ 3), ton accord ou tes corrections sur les écarts avec la spec (§ 2) et sur les hypothèses (§ 4).
+**Pour démarrer la phase 2**, il me faut seulement ton feu vert. Si un écart avec la spec (§ 2), une décision (§ 3) ou une hypothèse (§ 4) ne te convient pas, dis-le avant : c'est le moment où le corriger ne coûte rien.
