@@ -4,12 +4,11 @@
  * C'est ici, et seulement ici, que le module déclare ce qu'il apporte à l'application.
  * La signification de chaque rubrique est expliquée dans src/core/modules/types.ts.
  *
- * Phase 2 : le module est une « coquille » — il s'active, se désactive et apparaît
- * partout où il le doit, mais ses écrans sont encore vides. Ils arrivent en phase 4,
- * avec le type de contenu « actualité ».
  */
 import type { ModuleDefinition } from "@/core/modules/types";
+import { newsContentTypes } from "./content";
 import { newsLabels } from "./labels.fr";
+import { newsPackSections } from "./pack";
 import { NewsHomeBlock } from "./ui/NewsHomeBlock";
 
 export const newsModule: ModuleDefinition = {
@@ -44,8 +43,8 @@ export const newsModule: ModuleDefinition = {
   // Gérer les contenus du module : éditeurs et administrateurs
   actions: [{ key: "news.manage", minRole: "editor" }],
 
-  contentTypes: [],
-  packSections: [],
+  contentTypes: newsContentTypes,
+  packSections: newsPackSections,
   linkedFields: [],
 
   activityEvents: [],

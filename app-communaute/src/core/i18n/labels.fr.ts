@@ -263,6 +263,7 @@ export const coreLabels: Record<string, string> = {
   "core.pack.file": "{file}, élément {index}",
   "core.pack.invalidJson": "{file} : ce n'est pas un fichier JSON valide ({detail}).",
   "core.pack.notAList": "{file} : une liste d'éléments est attendue.",
+  "core.pack.invalidSlug": "nom de fichier « {slug} » refusé : minuscules, chiffres et tirets seulement.",
   "core.pack.unknownCategory": "catégorie « {path} » introuvable, élément laissé sans catégorie.",
   "core.pack.unknownLinkTarget": "lien vers « {target} » ignoré : contenu introuvable.",
   "core.pack.unknownLinkKind": "lien vers « {target} » ignoré : aucun module ne propose ce type de lien.",

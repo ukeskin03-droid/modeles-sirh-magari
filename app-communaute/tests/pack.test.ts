@@ -104,7 +104,12 @@ describe("contenus d'un pack", () => {
       const report = await importPack(await example(name));
       expect(report.sections.find((section) => section.id === "quiz.questions")?.created).toBe(10);
       expect(report.sections.find((section) => section.id === "quiz.quizzes")?.created).toBe(2);
+      expect(report.sections.find((section) => section.id === "news.items")?.created).toBe(2);
       expect(report.warnings).toEqual([]);
+
+      const news = await db().newsItem.findMany();
+      expect(news.every((item) => item.title.startsWith("[CONTENU D'EXEMPLE — À VALIDER]") && item.content.startsWith("[CONTENU D'EXEMPLE — À VALIDER]"))).toBe(true);
+      expect(news.filter((item) => item.pinned)).toHaveLength(1);
 
       const questions = await db().question.findMany({ include: { options: true } });
       expect(questions.every((question) => question.statement.startsWith("[CONTENU D'EXEMPLE — À VALIDER]"))).toBe(true);
@@ -121,6 +126,7 @@ describe("contenus d'un pack", () => {
     expect(again.sections.find((section) => section.id === "quiz.questions")?.unchanged).toBe(10);
     expect(await db().question.count()).toBe(10);
     expect(await db().quiz.count()).toBe(2);
+    expect(await db().newsItem.count()).toBe(2);
   });
 
   it("une simulation d'import décrit ce qui serait fait, sans rien modifier", async () => {

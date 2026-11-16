@@ -1,0 +1,48 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// TABLES DU MODULE « ACTUALITÉS »
+// ─────────────────────────────────────────────────────────────────────────────
+
+/// Une actualité.
+///
+/// Le statut enregistré ne prend que trois valeurs. Les états « programmée » et « expirée »
+/// ne sont pas enregistrés : ils se déduisent des dates au moment de l'affichage (une
+/// actualité publiée dont la date de publication est dans le futur est « programmée »).
+/// Aucune tâche planifiée n'est donc nécessaire pour publier à l'heure.
+model NewsItem {
+  id           String    @id @default(cuid())
+  /// Identifiant de l'adresse (/actualites/<slug>), figé à la création
+  slug         String    @unique
+  title        String
+  summary      String    @default("")
+  /// Contenu rédigé en Markdown
+  content      String    @default("")
+  categoryId   String?
+  /// "draft" (brouillon), "published" (publiée) ou "archived" (archivée)
+  status       String    @default("draft")
+  publishAt    DateTime?
+  expiresAt    DateTime?
+  /// Épinglée en haut de la liste
+  pinned       Boolean   @default(false)
+  coverMediaId String?
+  authorId     String?
+  /// Texte en minuscules et sans accents, pour la recherche
+  searchText   String    @default("")
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  reads NewsRead[]
+
+  @@index([status, publishAt])
+}
+
+/// Mémorise qu'un membre a ouvert une actualité, pour le badge « Nouveau ».
+/// Cette information est strictement personnelle : aucun écran ne la montre à un tiers.
+model NewsRead {
+  newsId String
+  userId String
+  readAt DateTime @default(now())
+  news   NewsItem @relation(fields: [newsId], references: [id], onDelete: Cascade)
+
+  @@id([newsId, userId])
+  @@index([userId])
+}
