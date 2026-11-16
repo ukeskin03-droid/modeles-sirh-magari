@@ -7,7 +7,7 @@
  */
 import crypto from "node:crypto";
 import path from "node:path";
-import { db } from "@/core/db/client";
+import { db, isDryRun } from "@/core/db/client";
 import { mediaStorage } from "./storage";
 
 /** Types de fichiers acceptés, avec leur extension. */
@@ -36,7 +36,8 @@ export async function saveMedia(input: { filename: string; data: Buffer; alt?: s
   if (input.data.byteLength > MEDIA_MAX_BYTES) throw new MediaError("too-large");
 
   const storageKey = `${crypto.randomUUID()}${extension}`;
-  await mediaStorage().put(storageKey, input.data);
+  // Pendant une simulation d'import, aucun fichier n'est réellement écrit ni supprimé.
+  if (!isDryRun()) await mediaStorage().put(storageKey, input.data);
   const media = await db().media.create({
     data: {
       filename: path.basename(input.filename),
@@ -60,6 +61,6 @@ export async function readMedia(id: string): Promise<{ mimeType: string; isPubli
 export async function deleteMedia(id: string): Promise<void> {
   const media = await db().media.findUnique({ where: { id } });
   if (!media) return;
-  await mediaStorage().delete(media.storageKey);
+  if (!isDryRun()) await mediaStorage().delete(media.storageKey);
   await db().media.delete({ where: { id } });
 }

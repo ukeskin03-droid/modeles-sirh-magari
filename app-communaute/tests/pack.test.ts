@@ -13,6 +13,7 @@ import { readMedia } from "@/core/media/service";
 import { activeModules, adminScreensFor, homeBlocksFor, navigationFor } from "@/core/modules/registry";
 import { readModuleStates } from "@/core/modules/state";
 import { applyPackConfig } from "@/core/pack/apply-config";
+import { importPack } from "@/core/pack/import";
 import { readPackDirectory } from "@/core/pack/read-directory";
 import { PackError, parsePackManifest, type Pack } from "@/core/pack/schema";
 import { resetDatabase } from "./support/database";
@@ -93,6 +94,65 @@ describe("les deux exemples", () => {
     const before = await counts();
     await applyPackConfig(await example("peopledoc"));
     expect(await counts()).toEqual(before);
+  });
+});
+
+describe("contenus d'un pack", () => {
+  it("chaque exemple contient 10 questions et 2 quiz, tous marqués comme contenu d'exemple", async () => {
+    for (const name of ["peopledoc", "copropriete"]) {
+      await resetDatabase();
+      const report = await importPack(await example(name));
+      expect(report.sections.find((section) => section.id === "quiz.questions")?.created).toBe(10);
+      expect(report.sections.find((section) => section.id === "quiz.quizzes")?.created).toBe(2);
+      expect(report.warnings).toEqual([]);
+
+      const questions = await db().question.findMany({ include: { options: true } });
+      expect(questions.every((question) => question.statement.startsWith("[CONTENU D'EXEMPLE — À VALIDER]"))).toBe(true);
+      expect(questions.every((question) => question.categoryId !== null)).toBe(true);
+      expect(new Set(questions.map((question) => question.type))).toEqual(new Set(["single", "multiple", "truefalse"]));
+      expect((await db().quiz.findMany()).every((quiz) => quiz.title.startsWith("[CONTENU D'EXEMPLE — À VALIDER]"))).toBe(true);
+    }
+  });
+
+  it("réimporter le même pack ne crée ni doublon ni modification", async () => {
+    await importPack(await example("copropriete"));
+    const again = await importPack(await example("copropriete"));
+    for (const section of again.sections) expect(section).toMatchObject({ created: 0, updated: 0 });
+    expect(again.sections.find((section) => section.id === "quiz.questions")?.unchanged).toBe(10);
+    expect(await db().question.count()).toBe(10);
+    expect(await db().quiz.count()).toBe(2);
+  });
+
+  it("une simulation d'import décrit ce qui serait fait, sans rien modifier", async () => {
+    const report = await importPack(await example("peopledoc"), { dryRun: true });
+    expect(report.sections.find((section) => section.id === "quiz.questions")?.created).toBe(10);
+    expect((await loadCommunity()).exists).toBe(false);
+    expect(await db().question.count()).toBe(0);
+    expect(await db().category.count()).toBe(0);
+    expect(await db().media.count()).toBe(0);
+  });
+
+  it("les contenus d'un module désactivé sont importés mais signalés comme masqués", async () => {
+    const pack = await example("copropriete");
+    pack.manifest.modules.quiz = { enabled: false, settings: {} };
+    const report = await importPack(pack);
+    expect(await db().question.count()).toBe(10);
+    expect(report.warnings.some((warning) => warning.includes("Quiz") && warning.includes("masqués"))).toBe(true);
+    expect(activeModules(await readModuleStates()).map((module) => module.key)).toEqual(["news"]);
+  });
+
+  it("une question invalide est signalée avec sa position, les autres sont importées", async () => {
+    const pack = await example("copropriete");
+    const questions = JSON.parse(pack.files.get("questions.json")!.toString("utf8"));
+    questions[2] = { ref: "q-003", type: "single", statement: "", options: [] };
+    questions[4].category = "categorie/inconnue";
+    pack.files.set("questions.json", Buffer.from(JSON.stringify(questions)));
+    const report = await importPack(pack);
+    expect(await db().question.count()).toBe(9);
+    expect(report.warnings.some((warning) => warning.includes("questions.json, élément 3") && warning.includes("énoncé"))).toBe(true);
+    expect(report.warnings.some((warning) => warning.includes("questions.json, élément 5") && warning.includes("categorie/inconnue"))).toBe(true);
+    // Le quiz qui citait la question refusée le signale aussi.
+    expect(report.warnings.some((warning) => warning.includes("quizzes.json") && warning.includes("q-003"))).toBe(true);
   });
 });
 

@@ -19,8 +19,7 @@ import { Suspense, type ReactNode } from "react";
 import { after } from "next/server";
 import { recordActivity } from "@/core/activity/log";
 import { PageLoading } from "@/core/ui/PageLoading";
-import { requireCan, requireModule, requireViewer, viewerCan } from "./context";
-import { redirect } from "next/navigation";
+import { requireCan, requireModule, requireModuleCan, requireViewer } from "./context";
 
 type PageComponent<Props> = (props: Props) => ReactNode | Promise<ReactNode>;
 
@@ -77,8 +76,7 @@ export function modulePage<Props extends object>(
 /** Page d'administration d'un module : module actif ET droit suffisant. */
 export function moduleAdminPage<Props extends object>(moduleKey: string, action: string, Component: PageComponent<Props>) {
   return withBoundary<Props>(async (props) => {
-    await requireModule(moduleKey);
-    if (!(await viewerCan(action))) redirect("/");
+    await requireModuleCan(moduleKey, action);
     return <Component {...props} />;
   });
 }

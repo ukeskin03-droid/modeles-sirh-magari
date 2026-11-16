@@ -111,6 +111,13 @@ export async function requireModule(moduleKey: string): Promise<Viewer> {
   return viewer;
 }
 
+/** Pour les actions d'administration d'un module : module actif ET droit suffisant. */
+export async function requireModuleCan(moduleKey: string, action: string): Promise<Viewer> {
+  const viewer = await requireModule(moduleKey);
+  if (!(await viewerCan(action))) redirect("/");
+  return viewer;
+}
+
 /** Vrai si la visite passe par une connexion chiffrée (https). */
 export async function isSecureRequest(): Promise<boolean> {
   const configured = configuredAppUrl();

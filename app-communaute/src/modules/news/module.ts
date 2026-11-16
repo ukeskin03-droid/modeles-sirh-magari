@@ -44,6 +44,10 @@ export const newsModule: ModuleDefinition = {
   // Gérer les contenus du module : éditeurs et administrateurs
   actions: [{ key: "news.manage", minRole: "editor" }],
 
+  contentTypes: [],
+  packSections: [],
+  linkedFields: [],
+
   activityEvents: [],
   notificationEvents: [],
   scheduledTasks: [],

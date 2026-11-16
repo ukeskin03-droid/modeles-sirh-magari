@@ -4,12 +4,11 @@
  * C'est ici, et seulement ici, que le module déclare ce qu'il apporte à l'application.
  * La signification de chaque rubrique est expliquée dans src/core/modules/types.ts.
  *
- * Phase 2 : le module est une « coquille » — il s'active, se désactive et apparaît
- * partout où il le doit, mais ses écrans sont encore vides. Ils arrivent en phase 3,
- * avec les types de contenu « quiz » et « question ».
  */
 import type { ModuleDefinition } from "@/core/modules/types";
+import { quizContentTypes } from "./content";
 import { quizLabels } from "./labels.fr";
+import { quizPackSections } from "./pack";
 import { QuizHomeBlock } from "./ui/QuizHomeBlock";
 
 export const quizModule: ModuleDefinition = {
@@ -45,7 +44,14 @@ export const quizModule: ModuleDefinition = {
   // Gérer les contenus du module : éditeurs et administrateurs
   actions: [{ key: "quiz.manage", minRole: "editor" }],
 
-  activityEvents: [],
+  contentTypes: quizContentTypes,
+  packSections: quizPackSections,
+  linkedFields: [],
+
+  activityEvents: [
+    { type: "quiz.answer", labelKey: "quiz.activity.answer" },
+    { type: "quiz.complete", labelKey: "quiz.activity.complete" },
+  ],
   notificationEvents: [],
   scheduledTasks: [],
 };

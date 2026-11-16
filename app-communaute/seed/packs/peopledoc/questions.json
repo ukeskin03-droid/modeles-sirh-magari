@@ -1,0 +1,195 @@
+[
+  {
+    "ref": "q-001",
+    "type": "single",
+    "statement": "[CONTENU D'EXEMPLE — À VALIDER] Question d'exemple n° 1 sur le sujet de la communauté : une seule proposition est correcte.",
+    "options": [
+      {
+        "label": "Proposition A (correcte dans cet exemple)",
+        "correct": true
+      },
+      {
+        "label": "Proposition B",
+        "correct": false
+      },
+      {
+        "label": "Proposition C",
+        "correct": false
+      }
+    ],
+    "explanation": "[CONTENU D'EXEMPLE — À VALIDER] Explication à rédiger : elle doit permettre de comprendre la bonne réponse sans autre lecture.",
+    "difficulty": 1,
+    "category": "gestion-documentaire/classement"
+  },
+  {
+    "ref": "q-002",
+    "type": "single",
+    "statement": "[CONTENU D'EXEMPLE — À VALIDER] Question d'exemple n° 2 sur le sujet de la communauté : une seule proposition est correcte.",
+    "options": [
+      {
+        "label": "Proposition A (correcte dans cet exemple)",
+        "correct": true
+      },
+      {
+        "label": "Proposition B",
+        "correct": false
+      },
+      {
+        "label": "Proposition C",
+        "correct": false
+      }
+    ],
+    "explanation": "[CONTENU D'EXEMPLE — À VALIDER] Explication à rédiger : elle doit permettre de comprendre la bonne réponse sans autre lecture.",
+    "difficulty": 1,
+    "category": "demandes/formulaires"
+  },
+  {
+    "ref": "q-003",
+    "type": "truefalse",
+    "statement": "[CONTENU D'EXEMPLE — À VALIDER] Affirmation d'exemple n° 3 sur le sujet de la communauté : est-elle vraie ?",
+    "answer": true,
+    "explanation": "[CONTENU D'EXEMPLE — À VALIDER] Explication à rédiger : elle doit permettre de comprendre la bonne réponse sans autre lecture.",
+    "difficulty": 1,
+    "category": "gestion-documentaire/classement"
+  },
+  {
+    "ref": "q-004",
+    "type": "multiple",
+    "statement": "[CONTENU D'EXEMPLE — À VALIDER] Question d'exemple n° 4 sur le sujet de la communauté : plusieurs propositions sont correctes.",
+    "options": [
+      {
+        "label": "Proposition A (correcte dans cet exemple)",
+        "correct": true
+      },
+      {
+        "label": "Proposition B (correcte dans cet exemple)",
+        "correct": true
+      },
+      {
+        "label": "Proposition C",
+        "correct": false
+      },
+      {
+        "label": "Proposition D",
+        "correct": false
+      }
+    ],
+    "explanation": "[CONTENU D'EXEMPLE — À VALIDER] Explication à rédiger : elle doit permettre de comprendre la bonne réponse sans autre lecture.",
+    "difficulty": 2,
+    "category": "administration/roles-et-droits"
+  },
+  {
+    "ref": "q-005",
+    "type": "single",
+    "statement": "[CONTENU D'EXEMPLE — À VALIDER] Question d'exemple n° 5 sur le sujet de la communauté : une seule proposition est correcte.",
+    "options": [
+      {
+        "label": "Proposition A (correcte dans cet exemple)",
+        "correct": true
+      },
+      {
+        "label": "Proposition B",
+        "correct": false
+      },
+      {
+        "label": "Proposition C",
+        "correct": false
+      }
+    ],
+    "explanation": "[CONTENU D'EXEMPLE — À VALIDER] Explication à rédiger : elle doit permettre de comprendre la bonne réponse sans autre lecture.",
+    "difficulty": 2,
+    "category": "demandes/formulaires"
+  },
+  {
+    "ref": "q-006",
+    "type": "truefalse",
+    "statement": "[CONTENU D'EXEMPLE — À VALIDER] Affirmation d'exemple n° 6 sur le sujet de la communauté : est-elle vraie ?",
+    "answer": false,
+    "explanation": "[CONTENU D'EXEMPLE — À VALIDER] Explication à rédiger : elle doit permettre de comprendre la bonne réponse sans autre lecture.",
+    "difficulty": 2,
+    "category": "gestion-documentaire/conservation"
+  },
+  {
+    "ref": "q-007",
+    "type": "multiple",
+    "statement": "[CONTENU D'EXEMPLE — À VALIDER] Question d'exemple n° 7 sur le sujet de la communauté : plusieurs propositions sont correctes.",
+    "options": [
+      {
+        "label": "Proposition A (correcte dans cet exemple)",
+        "correct": true
+      },
+      {
+        "label": "Proposition B (correcte dans cet exemple)",
+        "correct": true
+      },
+      {
+        "label": "Proposition C",
+        "correct": false
+      },
+      {
+        "label": "Proposition D",
+        "correct": false
+      }
+    ],
+    "explanation": "[CONTENU D'EXEMPLE — À VALIDER] Explication à rédiger : elle doit permettre de comprendre la bonne réponse sans autre lecture.",
+    "difficulty": 2,
+    "category": "gestion-documentaire/classement"
+  },
+  {
+    "ref": "q-008",
+    "type": "single",
+    "statement": "[CONTENU D'EXEMPLE — À VALIDER] Question d'exemple n° 8 sur le sujet de la communauté : une seule proposition est correcte.",
+    "options": [
+      {
+        "label": "Proposition A (correcte dans cet exemple)",
+        "correct": true
+      },
+      {
+        "label": "Proposition B",
+        "correct": false
+      },
+      {
+        "label": "Proposition C",
+        "correct": false
+      }
+    ],
+    "explanation": "[CONTENU D'EXEMPLE — À VALIDER] Explication à rédiger : elle doit permettre de comprendre la bonne réponse sans autre lecture.",
+    "difficulty": 3,
+    "category": "administration/roles-et-droits"
+  },
+  {
+    "ref": "q-009",
+    "type": "multiple",
+    "statement": "[CONTENU D'EXEMPLE — À VALIDER] Question d'exemple n° 9 sur le sujet de la communauté : plusieurs propositions sont correctes.",
+    "options": [
+      {
+        "label": "Proposition A (correcte dans cet exemple)",
+        "correct": true
+      },
+      {
+        "label": "Proposition B (correcte dans cet exemple)",
+        "correct": true
+      },
+      {
+        "label": "Proposition C",
+        "correct": false
+      },
+      {
+        "label": "Proposition D",
+        "correct": false
+      }
+    ],
+    "explanation": "[CONTENU D'EXEMPLE — À VALIDER] Explication à rédiger : elle doit permettre de comprendre la bonne réponse sans autre lecture.",
+    "difficulty": 3,
+    "category": "gestion-documentaire/conservation"
+  },
+  {
+    "ref": "q-010",
+    "type": "truefalse",
+    "statement": "[CONTENU D'EXEMPLE — À VALIDER] Affirmation d'exemple n° 10 sur le sujet de la communauté : est-elle vraie ?",
+    "answer": false,
+    "explanation": "[CONTENU D'EXEMPLE — À VALIDER] Explication à rédiger : elle doit permettre de comprendre la bonne réponse sans autre lecture.",
+    "difficulty": 3,
+    "category": "demandes/formulaires"
+  }
+]

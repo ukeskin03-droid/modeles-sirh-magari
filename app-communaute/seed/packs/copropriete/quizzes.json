@@ -1,0 +1,38 @@
+[
+  {
+    "slug": "decouverte",
+    "title": "[CONTENU D'EXEMPLE — À VALIDER] Quiz de découverte",
+    "description": "[CONTENU D'EXEMPLE — À VALIDER] Cinq questions choisies à la main, pour se familiariser.",
+    "status": "published",
+    "modes": "both",
+    "selection": "manual",
+    "questions": [
+      "q-001",
+      "q-002",
+      "q-003",
+      "q-004",
+      "q-005"
+    ]
+  },
+  {
+    "slug": "tirage-au-sort",
+    "title": "[CONTENU D'EXEMPLE — À VALIDER] Quiz par tirage au sort",
+    "description": "[CONTENU D'EXEMPLE — À VALIDER] Quatre questions tirées au hasard à chaque passage.",
+    "status": "published",
+    "modes": "evaluation",
+    "selection": "rules",
+    "rules": [
+      {
+        "difficulty": 1,
+        "count": 1
+      },
+      {
+        "category": "vie-de-l-immeuble",
+        "count": 1
+      },
+      {
+        "count": 2
+      }
+    ]
+  }
+]

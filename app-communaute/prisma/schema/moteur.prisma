@@ -236,3 +236,21 @@ model Job {
 
   @@index([status, runAt])
 }
+
+/// Lien entre deux contenus, quels que soient leurs modules (ex. une question de quiz
+/// vers un article). Chaque contenu est désigné par un couple (type, identifiant).
+/// C'est ce qui permet à un module d'être relié à un autre sans le connaître.
+model ContentLink {
+  id       String @id @default(cuid())
+  fromType String
+  fromId   String
+  toType   String
+  toId     String
+  /// Nature du lien : l'identifiant du champ lié qui l'a créé, ou "related"
+  relation String
+  position Int    @default(0)
+
+  @@unique([fromType, fromId, toType, toId, relation])
+  @@index([fromType, fromId])
+  @@index([toType, toId])
+}

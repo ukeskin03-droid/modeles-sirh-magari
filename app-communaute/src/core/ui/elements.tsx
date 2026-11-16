@@ -31,16 +31,27 @@ export function buttonClass(variant: ButtonVariant = "primary", extra = "", size
   return `${BUTTON_BASE} ${BUTTON_SIZES[size]} ${BUTTON_VARIANTS[variant]} ${extra}`;
 }
 
-export function Button({ variant = "primary", className = "", ...props }: ComponentProps<"button"> & { variant?: ButtonVariant }) {
-  return <button {...props} className={buttonClass(variant, className)} />;
+export function Button({
+  variant = "primary",
+  size = "md",
+  className = "",
+  ...props
+}: ComponentProps<"button"> & { variant?: ButtonVariant; size?: ButtonSize }) {
+  return <button {...props} className={buttonClass(variant, className, size)} />;
 }
 
 export function ButtonLink({
   variant = "primary",
+  size = "md",
   className = "",
   ...props
-}: ComponentProps<typeof Link> & { variant?: ButtonVariant }) {
-  return <Link {...props} className={buttonClass(variant, className)} />;
+}: ComponentProps<typeof Link> & { variant?: ButtonVariant; size?: ButtonSize }) {
+  return <Link {...props} className={buttonClass(variant, className, size)} />;
+}
+
+/** Les catégories sous forme d'options de liste déroulante, précédées d'un choix « vide ». */
+export function categoryOptions(categories: readonly { id: string; label: string }[], emptyLabel: string) {
+  return [{ value: "", label: emptyLabel }, ...categories.map((category) => ({ value: category.id, label: category.label }))];
 }
 
 // ── Structure de page ────────────────────────────────────────────────────────
@@ -134,7 +145,7 @@ export function EmptyState({ icon = "info", title, text }: { icon?: IconName; ti
 }
 
 // ── Formulaires ──────────────────────────────────────────────────────────────
-const INPUT_CLASS =
+export const INPUT_CLASS =
   "block min-h-10 w-full rounded-lg border border-line bg-surface px-3 py-2 text-base text-fg placeholder:text-muted sm:text-sm";
 
 /** Champ de saisie avec son libellé et, si besoin, une aide. Le libellé est relié au champ. */
@@ -197,6 +208,24 @@ export function DataTable({ caption, headers, children }: { caption: string; hea
         </thead>
         <tbody className="divide-y divide-line">{children}</tbody>
       </table>
+    </div>
+  );
+}
+
+/** Zone de texte sur plusieurs lignes, avec son libellé et, si besoin, une aide. */
+export function TextAreaField({ label, hint, name, ...props }: ComponentProps<"textarea"> & { label: string; hint?: string; name: string }) {
+  const id = props.id ?? `champ-${name}`;
+  return (
+    <div>
+      <label htmlFor={id} className="mb-1.5 block text-sm font-medium">
+        {label}
+      </label>
+      <textarea {...props} id={id} name={name} aria-describedby={hint ? `${id}-aide` : undefined} className={`${INPUT_CLASS} min-h-24`} />
+      {hint && (
+        <p id={`${id}-aide`} className="mt-1.5 text-sm text-muted">
+          {hint}
+        </p>
+      )}
     </div>
   );
 }

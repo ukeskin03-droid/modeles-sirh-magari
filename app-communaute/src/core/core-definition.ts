@@ -64,6 +64,7 @@ export const coreDefinition: Contribution = {
   activityEvents: [
     { type: "auth.login", labelKey: "core.activity.authLogin" },
     { type: "module.view", labelKey: "core.activity.moduleView" },
+    { type: "content.view", labelKey: "core.activity.contentView" },
   ],
 
   notificationEvents: [

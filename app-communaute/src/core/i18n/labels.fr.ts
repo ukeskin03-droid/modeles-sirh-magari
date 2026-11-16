@@ -18,6 +18,21 @@ export const coreLabels: Record<string, string> = {
   "core.error.text": "La page n'a pas pu s'afficher. Vous pouvez réessayer ; si le problème persiste, prévenez un administrateur.",
   "core.error.retry": "Réessayer",
 
+  "core.linked.none": "— Aucun —",
+  "core.category.label": "Catégorie",
+  "core.category.none": "— Sans catégorie —",
+  "core.category.all": "Toutes les catégories",
+  "core.form.save": "Enregistrer",
+  "core.form.saved": "Modifications enregistrées.",
+  "core.form.delete": "Supprimer",
+  "core.form.cancel": "Annuler",
+  "core.form.filter": "Filtrer",
+  "core.form.add": "Ajouter",
+  "core.form.remove": "Retirer",
+  "core.form.moveUp": "Monter",
+  "core.form.moveDown": "Descendre",
+  "core.form.search": "Rechercher",
+
   // ── En-tête et navigation
   "core.nav.main": "Navigation principale",
   "core.nav.home": "Accueil",
@@ -238,10 +253,20 @@ export const coreLabels: Record<string, string> = {
   "core.status.sent": "Envoyée",
   "core.activity.authLogin": "Connexion",
   "core.activity.moduleView": "Ouverture d'un module",
+  "core.activity.contentView": "Consultation d'un contenu",
   "core.job.activityPurge": "Purge du journal d'activité",
   "core.job.notificationsDispatch": "Envoi des notifications",
   "core.job.authCleanup": "Nettoyage des sessions",
   "core.notification.userInvited": "Invitation d'un membre",
+
+  // ── Import d'un pack
+  "core.pack.file": "{file}, élément {index}",
+  "core.pack.invalidJson": "{file} : ce n'est pas un fichier JSON valide ({detail}).",
+  "core.pack.notAList": "{file} : une liste d'éléments est attendue.",
+  "core.pack.unknownCategory": "catégorie « {path} » introuvable, élément laissé sans catégorie.",
+  "core.pack.unknownLinkTarget": "lien vers « {target} » ignoré : contenu introuvable.",
+  "core.pack.unknownLinkKind": "lien vers « {target} » ignoré : aucun module ne propose ce type de lien.",
+  "core.pack.hiddenModule": "« {module} » est désactivé : ses contenus ont été importés mais restent masqués tant que le module n'est pas activé.",
 
   // ── E-mails
   "core.mail.invitation.subject": "Votre accès à {community}",

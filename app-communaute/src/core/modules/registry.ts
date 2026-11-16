@@ -18,7 +18,10 @@ import type { Labels, Vocabulary } from "@/core/i18n/translate";
 import type {
   ActivityEventDefinition,
   AdminScreenDefinition,
+  ContentTypeDefinition,
   HomeBlockDefinition,
+  LinkedFieldDefinition,
+  PackSectionDefinition,
   ModuleDefinition,
   NavigationEntry,
   NotificationEventDefinition,
@@ -105,6 +108,26 @@ export function adminScreensFor(active: readonly ModuleDefinition[], role: Role)
   return screens.filter((screen) => roleCan(role, screen.action, index));
 }
 
+/** Un type de contenu, parmi ceux des modules donnés (undefined si son module n'en fait pas partie). */
+export function findContentType(type: string, modules: readonly ModuleDefinition[] = installedModules): ContentTypeDefinition | undefined {
+  return modules.flatMap((module) => module.contentTypes).find((contentType) => contentType.type === type);
+}
+
+/**
+ * Les champs liés proposés à un type de contenu hôte par les modules ACTIFS.
+ * Un champ n'est proposé que si le module qui le déclare et celui du contenu visé sont actifs.
+ */
+export function linkedFieldsFor(active: readonly ModuleDefinition[], hostType: string): LinkedFieldDefinition[] {
+  return active
+    .flatMap((module) => module.linkedFields)
+    .filter((field) => field.hostType === hostType && findContentType(field.targetType, active) !== undefined);
+}
+
+/** Toutes les sections de pack des modules installés (un pack s'importe même pour un module inactif). */
+export function packSectionsCatalog(): (PackSectionDefinition & { moduleKey: string })[] {
+  return installedModules.flatMap((module) => module.packSections.map((section) => ({ ...section, moduleKey: module.key })));
+}
+
 /** Les types d'événements du journal d'activité, avec leur libellé. */
 export function activityEventsCatalog(): ActivityEventDefinition[] {
   return [...coreDefinition.activityEvents, ...installedModules.flatMap((module) => module.activityEvents)];
@@ -187,6 +210,16 @@ export function registryProblems(): string[] {
       }
     }
     for (const event of mod.activityEvents) requireLabel(owner, event.labelKey);
+    for (const contentType of mod.contentTypes) {
+      requireLabel(owner, contentType.labelKey);
+      if (!contentType.type.startsWith(`${mod.key}.`)) problems.push(`${owner} : le type « ${contentType.type} » doit commencer par « ${mod.key}. »`);
+    }
+    for (const section of mod.packSections) requireLabel(owner, section.labelKey);
+    for (const field of mod.linkedFields) {
+      requireLabel(owner, field.labelKey);
+      requireLabel(owner, field.readerLabelKey);
+      if (!findContentType(field.targetType, [mod])) problems.push(`${owner} : le champ lié « ${field.id} » doit viser un type de contenu du module`);
+    }
     for (const required of mod.requires ?? []) {
       if (!installedModules.some((other) => other.key === required)) problems.push(`${owner} : nécessite un module inconnu (${required})`);
     }

@@ -9,10 +9,8 @@
  * Le moteur ne contient donc aucune condition du type « si le quiz est actif » : il
  * lit les fiches des modules actifs. Désactiver un module revient à ne plus lire sa fiche.
  *
- * Rubriques qui s'ajouteront à cette fiche quand la fonctionnalité correspondante sera
- * développée : types de contenu et pages partageables, fournisseur de recherche, champs
- * liés, formats d'import, sections de pack, données personnelles (phases 3 à 7),
- * indicateurs de tableau de bord (lot 1), formats de partage (lot 4).
+ * Rubriques qui s'ajouteront à cette fiche avec les lots : indicateurs de tableau de
+ * bord (lot 1), formats de partage (lot 4).
  */
 import type { ReactNode } from "react";
 import type { ActionDefinition } from "@/core/auth/permissions";
@@ -80,6 +78,79 @@ export type ScheduledTaskDefinition = {
   handler: (payload: Record<string, unknown>) => Promise<void>;
 };
 
+/** Résumé d'un contenu, quel que soit son module : de quoi l'afficher et y renvoyer. */
+export type ContentSummary = {
+  id: string;
+  /** Identifiant stable et lisible (celui des adresses et des packs) */
+  key: string;
+  title: string;
+  description: string;
+  /** Adresse de la page du contenu, ou null s'il n'a pas de page propre */
+  url: string | null;
+  /** Vrai si les lecteurs peuvent le voir en ce moment (publié, non expiré…) */
+  visible: boolean;
+};
+
+/**
+ * Un type de contenu du module (ex. "news.item"). Le moteur s'en sert pour désigner
+ * « un contenu, quel que soit son module » : liens entre contenus, journal d'activité,
+ * liens de partage, recherche.
+ */
+export type ContentTypeDefinition = {
+  type: string;
+  /** Libellé du type (en général un terme du vocabulaire) */
+  labelKey: string;
+  /** Retrouve l'identifiant interne à partir de l'identifiant stable */
+  findByKey: (key: string) => Promise<string | null>;
+  summarize: (id: string) => Promise<ContentSummary | null>;
+  /** Tous les contenus de ce type, pour les listes de choix de l'administration */
+  list: () => Promise<ContentSummary[]>;
+};
+
+/** Résultat de l'import d'une section de pack. */
+export type PackSectionReport = {
+  created: number;
+  updated: number;
+  unchanged: number;
+  /** Messages destinés à l'utilisateur (éléments ignorés, références introuvables…) */
+  warnings: string[];
+  /** Liens vers d'autres contenus, à créer une fois toutes les sections importées */
+  links: { fromType: string; fromKey: string; to: string }[];
+};
+
+/** Fichiers produits par l'export d'une section de pack (chemin dans le pack → contenu). */
+export type PackSectionFiles = Map<string, string | Buffer>;
+
+/**
+ * Une section de pack gérée par le module (ex. le fichier questions.json).
+ * Toutes les sections sont facultatives : un pack sans ce fichier est valide.
+ */
+export type PackSectionDefinition = {
+  id: string;
+  labelKey: string;
+  import: (files: ReadonlyMap<string, Buffer>, context: { t: Translator }) => Promise<PackSectionReport>;
+  export: () => Promise<PackSectionFiles>;
+};
+
+/**
+ * Un champ que le module AJOUTE aux formulaires d'un autre module, sans que celui-ci le
+ * connaisse (ex. la base de connaissance ajoute « Article lié » au formulaire de question).
+ * Le module hôte affiche simplement « les champs liés que les modules actifs proposent ».
+ */
+export type LinkedFieldDefinition = {
+  id: string;
+  /** Type de contenu hôte, ex. "quiz.question" */
+  hostType: string;
+  /** Type de contenu proposé, ex. "knowledge.article" */
+  targetType: string;
+  /** Libellé du champ dans le formulaire hôte */
+  labelKey: string;
+  /** Texte affiché devant le lien, côté lecteur */
+  readerLabelKey: string;
+  /** Nom de la colonne correspondante dans les modèles d'import (facultative) */
+  importColumn: string;
+};
+
 /** Ce que le moteur et les modules ont en commun. */
 export type Contribution = {
   /** Textes du module (fichier labels.fr.ts) */
@@ -107,6 +178,9 @@ export type ModuleDefinition = Contribution & {
   descriptionKey: string;
   vocabulary: TermDefinition[];
   homeBlocks: HomeBlockDefinition[];
+  contentTypes: ContentTypeDefinition[];
+  packSections: PackSectionDefinition[];
+  linkedFields: LinkedFieldDefinition[];
   /** Modules dont celui-ci est le prolongement (ex. le quiz en direct nécessite le quiz).
    *  L'interrupteur n'est proposé que si ces modules sont actifs. */
   requires?: string[];

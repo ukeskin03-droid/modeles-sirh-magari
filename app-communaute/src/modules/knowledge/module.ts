@@ -44,6 +44,10 @@ export const knowledgeModule: ModuleDefinition = {
   // Gérer les contenus du module : éditeurs et administrateurs
   actions: [{ key: "knowledge.manage", minRole: "editor" }],
 
+  contentTypes: [],
+  packSections: [],
+  linkedFields: [],
+
   activityEvents: [],
   notificationEvents: [],
   scheduledTasks: [],

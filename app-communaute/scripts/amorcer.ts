@@ -57,13 +57,13 @@ async function main() {
   }
 
   const { readPackDirectory } = await import("@/core/pack/read-directory");
-  const { applyPackConfig } = await import("@/core/pack/apply-config");
+  const { importPack } = await import("@/core/pack/import");
   const { saveCommunity } = await import("@/core/community/service");
   const { hashPassword } = await import("@/core/auth/password");
   const { ensureRecurringJobs } = await import("@/core/jobs/runner");
 
   const pack = await readPackDirectory(path.join(packsFolder, packName));
-  const { warnings } = await applyPackConfig(pack);
+  const { warnings, sections } = await importPack(pack);
   await saveCommunity({ status: "open" });
 
   const passwordHash = await hashPassword(DEMO_PASSWORD);
@@ -71,6 +71,7 @@ async function main() {
   await ensureRecurringJobs();
 
   console.log(`\n✔ Communauté « ${pack.manifest.identity.name} » chargée dans ${folder}`);
+  for (const section of sections) console.log(`  ${section.label} : ${section.created} créé(s)`);
   for (const warning of warnings) console.log(`  ⚠ ${warning}`);
   console.log("\n  Comptes de démonstration (mot de passe : " + DEMO_PASSWORD + ")");
   for (const user of DEMO_USERS) console.log(`    ${user.role.padEnd(7)} ${user.email}`);
