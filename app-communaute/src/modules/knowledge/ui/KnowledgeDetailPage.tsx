@@ -6,6 +6,7 @@ import { displayNames } from "@/core/auth/users";
 import { categoriesById, listCategories } from "@/core/categories/service";
 import { tagsOf } from "@/core/content/tags";
 import { formatDate } from "@/core/i18n/format";
+import { ShareBox } from "@/core/share/ShareBox";
 import { getT, requireViewer, viewerCan } from "@/core/request/context";
 import { Alert, ButtonLink, PageContainer, PageHeader } from "@/core/ui/elements";
 import { Icon } from "@/core/ui/icons";
@@ -44,6 +45,11 @@ export async function KnowledgeDetailPage({ params }: { params: Promise<{ slug: 
           </ButtonLink>
         )}
       </PageHeader>
+      {article.status === "published" && (
+        <div className="mb-6 flex justify-end">
+          <ShareBox contentType={ARTICLE_TYPE} contentId={article.id} />
+        </div>
+      )}
       {article.status !== "published" && (
         <div className="mb-6">
           <Alert tone="warning">{t("knowledge.detail.hidden")}</Alert>

@@ -4,6 +4,7 @@ import { recordActivity } from "@/core/activity/log";
 import { categoriesById, listCategories } from "@/core/categories/service";
 import { LinkedContent } from "@/core/content/linked-fields";
 import { formatDate } from "@/core/i18n/format";
+import { ShareBox } from "@/core/share/ShareBox";
 import { getT, requireViewer, viewerCan } from "@/core/request/context";
 import { Alert, ButtonLink, PageContainer, PageHeader } from "@/core/ui/elements";
 import { Markdown } from "@/core/ui/Markdown";
@@ -36,6 +37,11 @@ export async function NewsDetailPage({ params }: { params: Promise<{ slug: strin
           </ButtonLink>
         )}
       </PageHeader>
+      {state === "published" && (
+        <div className="mb-6 flex justify-end">
+          <ShareBox contentType={"news.item"} contentId={item.id} />
+        </div>
+      )}
       {state !== "published" && (
         <div className="mb-6">
           <Alert tone="warning">{t("news.detail.hidden", { state: t(`news.state.${state}`) })}</Alert>

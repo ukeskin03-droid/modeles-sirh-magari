@@ -9,7 +9,7 @@
  * actif, il se branche sur d'autres modules par la rubrique « linkedFields ».
  */
 import type { ModuleDefinition } from "@/core/modules/types";
-import { knowledgeContentTypes, knowledgeLinkedFields } from "./content";
+import { knowledgeContentTypes, knowledgeLinkedFields, knowledgePersonalData, knowledgeSearchProviders } from "./content";
 import { articlesImportFormat } from "./import";
 import { knowledgeLabels } from "./labels.fr";
 import { knowledgePackSections } from "./pack";
@@ -52,6 +52,9 @@ export const knowledgeModule: ModuleDefinition = {
   linkedFields: knowledgeLinkedFields,
 
   importFormats: [articlesImportFormat],
+
+  searchProviders: knowledgeSearchProviders,
+  personalData: knowledgePersonalData,
 
   activityEvents: [],
   notificationEvents: [],

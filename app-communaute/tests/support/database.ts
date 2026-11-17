@@ -3,6 +3,7 @@ import { db } from "@/core/db/client";
 /** Vide toutes les tables, pour repartir d'une base propre entre deux tests. */
 export async function resetDatabase(): Promise<void> {
   const client = db();
+  await client.shareLink.deleteMany();
   await client.contentLink.deleteMany();
   await client.contentTag.deleteMany();
   await client.tag.deleteMany();

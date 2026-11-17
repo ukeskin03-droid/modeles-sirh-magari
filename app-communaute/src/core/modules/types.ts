@@ -105,6 +105,34 @@ export type ContentTypeDefinition = {
   summarize: (id: string) => Promise<ContentSummary | null>;
   /** Tous les contenus de ce type, pour les listes de choix de l'administration */
   list: () => Promise<ContentSummary[]>;
+  /** Début de l'adresse des pages de ce type, ex. "/actualites/" (absent s'il n'a pas de page) */
+  urlPrefix?: string;
+};
+
+/** Un résultat de recherche. */
+export type SearchResult = { id: string; title: string; excerpt: string; url: string };
+
+/**
+ * Le moteur de recherche d'un module. La recherche globale interroge ceux des modules
+ * actifs. « words » : les mots cherchés, déjà en minuscules et sans accents ; un résultat
+ * doit les contenir tous, et être visible des lecteurs.
+ */
+export type SearchProviderDefinition = {
+  id: string;
+  /** Titre du groupe de résultats */
+  labelKey: string;
+  search: (words: readonly string[]) => Promise<SearchResult[]>;
+};
+
+/**
+ * Ce que le module sait d'une personne. Sert à la page « Mes données » : consultation,
+ * export, et suppression du compte.
+ */
+export type PersonalDataDefinition = {
+  /** Les données de la personne détenues par le module, sous une forme lisible */
+  export: (userId: string) => Promise<Record<string, unknown>>;
+  /** Efface ou rend anonyme tout ce qui concerne la personne */
+  erase: (userId: string) => Promise<void>;
 };
 
 /** Résultat de l'import d'une section de pack. */
@@ -221,6 +249,8 @@ export type ModuleDefinition = Contribution & {
   contentTypes: ContentTypeDefinition[];
   packSections: PackSectionDefinition[];
   linkedFields: LinkedFieldDefinition[];
+  searchProviders?: SearchProviderDefinition[];
+  personalData?: PersonalDataDefinition;
   /** Formats d'import en masse proposés par le module */
   importFormats?: ImportFormatDefinition[];
   /** Étapes que le module ajoute à l'assistant de configuration (avant le récapitulatif) */

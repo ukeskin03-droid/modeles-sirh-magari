@@ -3,7 +3,8 @@
  * peut le désigner, et les champs que le module propose aux autres modules.
  */
 import { db } from "@/core/db/client";
-import type { ContentSummary, ContentTypeDefinition, LinkedFieldDefinition } from "@/core/modules/types";
+import type { ContentSummary, ContentTypeDefinition, LinkedFieldDefinition, PersonalDataDefinition, SearchProviderDefinition } from "@/core/modules/types";
+import { containsAllWords, excerptAround } from "@/core/search/service";
 import { ARTICLE_TYPE } from "./model";
 
 const summarize = (article: { id: string; slug: string; title: string; summary: string; status: string }): ContentSummary => ({
@@ -18,6 +19,7 @@ const summarize = (article: { id: string; slug: string; title: string; summary: 
 export const knowledgeContentTypes: ContentTypeDefinition[] = [
   {
     type: ARTICLE_TYPE,
+    urlPrefix: "/articles/",
     labelKey: "knowledge.type.article",
     findByKey: async (key) => (await db().article.findUnique({ where: { slug: key }, select: { id: true } }))?.id ?? null,
     summarize: async (id) => {
@@ -52,3 +54,24 @@ export const knowledgeLinkedFields: LinkedFieldDefinition[] = [
     importColumn: "article_lie",
   },
 ];
+
+/** Recherche : les articles publiés (titre, résumé, contenu, mots-clés). */
+export const knowledgeSearchProviders: SearchProviderDefinition[] = [
+  {
+    id: "knowledge.articles",
+    labelKey: "knowledge.page.title",
+    search: async (words) => {
+      const articles = await db().article.findMany({ where: { status: "published", AND: containsAllWords(words) }, orderBy: { revisedAt: "desc" }, take: 20 });
+      return articles.map((article) => ({ id: article.id, title: article.title, excerpt: excerptAround(article.summary || article.content, words), url: `/articles/${article.slug}` }));
+    },
+  },
+];
+
+/** Données personnelles : la signature d'auteur des articles. */
+export const knowledgePersonalData: PersonalDataDefinition = {
+  export: async (userId) => ({ authored: (await db().article.findMany({ where: { authorId: userId }, select: { title: true } })).map((article) => article.title) }),
+  erase: async (userId) => {
+    // Les articles restent en ligne, mais ne sont plus rattachés à la personne.
+    await db().article.updateMany({ where: { authorId: userId }, data: { authorId: null } });
+  },
+};

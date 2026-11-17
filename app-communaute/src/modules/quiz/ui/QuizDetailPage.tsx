@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { after } from "next/server";
 import { recordActivity } from "@/core/activity/log";
 import { formatDateTime } from "@/core/i18n/format";
+import { ShareBox } from "@/core/share/ShareBox";
 import { getT, requireViewer } from "@/core/request/context";
 import { Alert, Badge, ButtonLink, Card, PageContainer, PageHeader } from "@/core/ui/elements";
 import { ActionForm, SubmitButton } from "@/core/ui/forms";
@@ -25,6 +26,9 @@ export async function QuizDetailPage({ params }: { params: Promise<{ slug: strin
   return (
     <PageContainer narrow>
       <PageHeader title={quiz.title} description={quiz.description || undefined} back={{ href: "/quiz", label: t("quiz.detail.back") }} />
+      <div className="mb-6 flex justify-end">
+        <ShareBox contentType={"quiz.quiz"} contentId={quiz.id} />
+      </div>
 
       <Card>
         <div className="flex flex-wrap items-center gap-2">

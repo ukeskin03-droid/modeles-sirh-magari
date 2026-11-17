@@ -48,6 +48,10 @@ export async function AppHeader() {
                 <span className="sr-only sm:hidden">{t("core.nav.admin")}</span>
               </NavLink>
             )}
+            <NavLink href="/recherche">
+              <Icon name="search" />
+              <span className="sr-only">{t("core.search.title")}</span>
+            </NavLink>
             <ThemeToggle
               labels={{
                 label: t("core.theme.label"),
@@ -56,13 +60,13 @@ export async function AppHeader() {
                 dark: t("core.theme.dark"),
               }}
             />
+            <NavLink href="/mes-donnees">
+              <Icon name="user" />
+              <span className="hidden max-w-32 truncate md:inline">{viewer.name}</span>
+              <span className="sr-only">{t("core.header.myData")}</span>
+            </NavLink>
             <form action={logoutAction}>
-              <button
-                type="submit"
-                title={t("core.header.account", { name: viewer.name })}
-                className="inline-flex min-h-10 items-center gap-2 rounded-lg px-2 text-sm font-medium text-fg hover:bg-surface-2"
-              >
-                <span className="hidden max-w-32 truncate md:inline">{viewer.name}</span>
+              <button type="submit" title={t("core.header.logout")} className="inline-flex size-10 items-center justify-center rounded-lg text-fg hover:bg-surface-2">
                 <Icon name="logout" />
                 <span className="sr-only">{t("core.header.logout")}</span>
               </button>

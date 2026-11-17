@@ -13,7 +13,7 @@ export const SESSION_IDLE_DAYS = 30;
 export const INVITATION_DAYS = 7;
 
 /** Pages accessibles sans être connecté. */
-export const PUBLIC_PATHS = ["/connexion", "/installation", "/invitation", "/bientot"] as const;
+export const PUBLIC_PATHS = ["/connexion", "/installation", "/invitation", "/bientot", "/apercu-image"] as const;
 
 export function isPublicPath(pathname: string): boolean {
   return PUBLIC_PATHS.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));

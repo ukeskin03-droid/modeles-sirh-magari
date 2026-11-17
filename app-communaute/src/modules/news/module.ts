@@ -6,7 +6,7 @@
  *
  */
 import type { ModuleDefinition } from "@/core/modules/types";
-import { newsContentTypes } from "./content";
+import { newsContentTypes, newsPersonalData, newsSearchProviders } from "./content";
 import { newsLabels } from "./labels.fr";
 import { newsPackSections } from "./pack";
 import { NewsHomeBlock } from "./ui/NewsHomeBlock";
@@ -46,6 +46,9 @@ export const newsModule: ModuleDefinition = {
   contentTypes: newsContentTypes,
   packSections: newsPackSections,
   linkedFields: [],
+
+  searchProviders: newsSearchProviders,
+  personalData: newsPersonalData,
 
   activityEvents: [],
   notificationEvents: [],

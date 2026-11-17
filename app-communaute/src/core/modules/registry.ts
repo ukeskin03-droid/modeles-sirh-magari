@@ -124,6 +124,18 @@ export function linkedFieldsFor(active: readonly ModuleDefinition[], hostType: s
     .filter((field) => field.hostType === hostType && findContentType(field.targetType, active) !== undefined);
 }
 
+/** Retrouve un contenu à partir de l'adresse de sa page, parmi les modules donnés. */
+export async function findContentByPath(pathname: string, modules: readonly ModuleDefinition[]): Promise<{ type: string; id: string } | null> {
+  for (const contentType of modules.flatMap((module) => module.contentTypes)) {
+    if (!contentType.urlPrefix || !pathname.startsWith(contentType.urlPrefix)) continue;
+    const key = pathname.slice(contentType.urlPrefix.length);
+    if (!key || key.includes("/")) continue;
+    const id = await contentType.findByKey(decodeURIComponent(key));
+    if (id) return { type: contentType.type, id };
+  }
+  return null;
+}
+
 /** Les formats d'import en masse des modules ACTIFS. */
 export function importFormatsFor(active: readonly ModuleDefinition[]): (ImportFormatDefinition & { moduleKey: string })[] {
   return active.flatMap((module) => (module.importFormats ?? []).map((format) => ({ ...format, moduleKey: module.key })));
@@ -221,6 +233,7 @@ export function registryProblems(): string[] {
       if (!contentType.type.startsWith(`${mod.key}.`)) problems.push(`${owner} : le type « ${contentType.type} » doit commencer par « ${mod.key}. »`);
     }
     for (const section of mod.packSections) requireLabel(owner, section.labelKey);
+    for (const provider of mod.searchProviders ?? []) requireLabel(owner, provider.labelKey);
     for (const format of mod.importFormats ?? []) {
       requireLabel(owner, format.labelKey);
       requireLabel(owner, format.descriptionKey);

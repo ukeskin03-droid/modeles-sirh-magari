@@ -92,6 +92,8 @@ export const coreDefinition: Contribution = {
     { type: "auth.login", labelKey: "core.activity.authLogin" },
     { type: "module.view", labelKey: "core.activity.moduleView" },
     { type: "content.view", labelKey: "core.activity.contentView" },
+    { type: "search.query", labelKey: "core.activity.search" },
+    { type: "share.click", labelKey: "core.activity.shareClick" },
   ],
 
   notificationEvents: [

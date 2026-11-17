@@ -1,0 +1,33 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# EXEMPLE : deux communautés sur un même serveur, à partir de la même image.
+#
+#   docker compose up -d --build
+#
+# Chaque communauté a son port, son dossier de données et ses réglages.
+# Pour en ajouter une troisième : copier un bloc, changer le nom, le port et le dossier.
+# Devant ces conteneurs, un serveur frontal (Caddy, Nginx, Traefik…) fournit le https et
+# associe une adresse à chaque port (ex. peopledoc.exemple.fr → 3001).
+# ─────────────────────────────────────────────────────────────────────────────
+x-application: &application
+  build: .
+  image: communaute
+  restart: unless-stopped
+
+services:
+  peopledoc:
+    <<: *application
+    ports: ["3001:3000"]
+    volumes: ["./donnees/peopledoc:/donnees"]
+    environment:
+      APP_URL: https://peopledoc.exemple.fr
+      SETUP_CODE: remplacez-par-un-code-long-et-secret
+      # SMTP_URL: smtps://identifiant:motdepasse@smtp.exemple.fr:465
+      # MAIL_FROM: "Communauté <ne-pas-repondre@exemple.fr>"
+
+  copropriete:
+    <<: *application
+    ports: ["3002:3000"]
+    volumes: ["./donnees/copropriete:/donnees"]
+    environment:
+      APP_URL: https://copropriete.exemple.fr
+      SETUP_CODE: remplacez-par-un-autre-code-long-et-secret

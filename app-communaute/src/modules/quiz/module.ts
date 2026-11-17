@@ -6,7 +6,7 @@
  *
  */
 import type { ModuleDefinition } from "@/core/modules/types";
-import { quizContentTypes } from "./content";
+import { quizContentTypes, quizPersonalData, quizSearchProviders } from "./content";
 import { questionsImportFormat } from "./import";
 import { quizLabels } from "./labels.fr";
 import { quizPackSections } from "./pack";
@@ -50,6 +50,9 @@ export const quizModule: ModuleDefinition = {
   linkedFields: [],
 
   importFormats: [questionsImportFormat],
+
+  searchProviders: quizSearchProviders,
+  personalData: quizPersonalData,
 
   activityEvents: [
     { type: "quiz.answer", labelKey: "quiz.activity.answer" },

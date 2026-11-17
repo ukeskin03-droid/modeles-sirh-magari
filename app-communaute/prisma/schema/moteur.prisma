@@ -274,3 +274,17 @@ model ContentTag {
   @@id([tagId, contentType, contentId])
   @@index([contentType, contentId])
 }
+
+/// Lien court de partage vers un contenu : /l/<code>. Chaque clic est noté dans le
+/// journal d'activité, ce qui permettra de savoir quels partages amènent des visites.
+model ShareLink {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  contentType String
+  contentId   String
+  /// Canal de partage : "link" (lien copié) en V1 ; d'autres canaux viendront avec les lots
+  channel     String   @default("link")
+  createdAt   DateTime @default(now())
+
+  @@unique([contentType, contentId, channel])
+}

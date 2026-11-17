@@ -7,21 +7,17 @@ On l'installe une fois par communauté, puis on la paramètre entièrement depui
 > Le code ne contient aucun terme métier : tout ce qui distingue une communauté d'une autre
 > (nom, couleurs, vocabulaire, catégories, modules actifs, contenus) est une donnée.
 
+- Créer et paramétrer une communauté, sans coder : [`CREER_UN_ESPACE.md`](CREER_UN_ESPACE.md)
+- Animer la communauté au quotidien : [`ANIMER_LA_COMMUNAUTE.md`](ANIMER_LA_COMMUNAUTE.md)
 - Le besoin complet : [`SPEC.md`](SPEC.md)
 - Les choix d'architecture : [`docs/CADRAGE.md`](docs/CADRAGE.md)
 
 ## Où en est le projet
 
-| Phase | Contenu | État |
-|---|---|---|
-| 1. Cadrage | Architecture, modèle de données, registre, format de pack | ✅ |
-| 2. Socle | Projet, base, connexion et rôles, configuration, registre et activation des modules, journal d'activité, notifications, tâches planifiées, page d'accueil | ✅ |
-| 3. Quiz | Banque de questions, quiz manuels ou par tirage, entraînement et évaluation, historique | ✅ |
-| 4. Actualités | Statuts, programmation, expiration, épinglage, badge « Nouveau », contenu Markdown | ✅ |
-| 5. Base de connaissance | Articles, catégories, mots-clés, articles liés, lien optionnel depuis les questions et les actualités | ✅ |
-| 6. Atelier | Assistant de configuration en 8 étapes, éditeur visuel avec bascule Markdown, médiathèque, imports en masse avec prévisualisation, export et import de pack .zip | ✅ |
-| 7. Finitions | Recherche, pages partageables, « Mes données », documentation complète, image Docker | à venir |
-
+**La V1 (socle) est terminée**, phases 1 à 7 : base de connaissance optionnelle, quiz,
+actualités, recherche globale, administration, assistant de configuration, imports, packs.
+Les lots fonctionnels 1 à 6 (pilotage, fidélisation, participation, WhatsApp, progression,
+assistance IA) viendront ensuite, un par un.
 
 ## Prérequis
 
@@ -73,9 +69,9 @@ Pour repartir de zéro : `npm run seed -- peopledoc --reinitialiser`.
 npm run dev
 ```
 
-Ouvrez http://localhost:3000 : l'écran d'installation crée le compte administrateur.
-Les données vont dans `donnees/defaut`. En phase 2, l'identité et l'apparence viennent d'un
-pack ; l'assistant de configuration à l'écran arrive en phase 6.
+Ouvrez http://localhost:3000 : l'écran d'installation crée le compte administrateur, puis
+l'assistant de configuration vous guide en 8 étapes. Les données vont dans `donnees/defaut`.
+Le déroulé complet est dans [`CREER_UN_ESPACE.md`](CREER_UN_ESPACE.md).
 
 ## Réglages d'une installation
 
@@ -90,7 +86,92 @@ Tous les réglages sont facultatifs en développement. Ils sont décrits dans
 | `SMTP_URL`, `MAIL_FROM` | Envoi des e-mails. Sans `SMTP_URL`, ils sont écrits dans `<DATA_DIR>/emails` |
 | `INTERNAL_SCHEDULER`, `CRON_SECRET` | Déclenchement des tâches planifiées (interne par défaut) |
 
-**Sauvegarder une communauté** = copier son dossier de données.
+Aucune clé d'API n'est nécessaire : l'assistance IA (lot 6) sera facultative et se réglera
+dans l'interface, par communauté.
+
+### E-mails
+
+Sans réglage, les e-mails (invitations) sont écrits dans `<DATA_DIR>/emails`, et le lien
+d'invitation s'affiche à l'écran pour être transmis à la main. Pour un envoi réel,
+renseignez `SMTP_URL` avec les paramètres donnés par votre fournisseur d'e-mails, par
+exemple `smtps://identifiant:motdepasse@smtp.exemple.fr:465`, et `MAIL_FROM` avec
+l'adresse d'expéditeur. Les envois en échec sont retentés automatiquement ; leur état se
+lit dans Administration › État technique.
+
+### Tâches planifiées
+
+L'application déclenche elle-même ses tâches de fond, une fois par minute : purge du
+journal d'activité, envoi des notifications en attente, nettoyage des sessions et des
+fichiers temporaires. Il n'y a rien à configurer tant qu'elle tourne en continu.
+Si l'hébergement endort l'application entre deux visites, coupez la minuterie
+(`INTERNAL_SCHEDULER=off`) et faites appeler chaque minute, par un planificateur externe :
+
+```bash
+curl -X POST -H "Authorization: Bearer <CRON_SECRET>" https://votre-adresse/api/cron/tick
+```
+
+## Déployer
+
+L'hébergement cible n'est pas encore choisi. Ce qui suit vaut pour tout serveur capable
+de faire tourner Node.js ou Docker en continu.
+
+### Avec Docker
+
+`Dockerfile` construit l'image ; `docker-compose.yml` montre deux communautés sur un même
+serveur, chacune avec son port et son dossier de données.
+
+```bash
+docker compose up -d --build
+```
+
+Placez devant un serveur frontal (Caddy, Nginx, Traefik…) qui fournit le https et associe
+une adresse à chaque communauté.
+
+> Le `Dockerfile` et le `docker-compose.yml` ont été écrits et relus, et la syntaxe du
+> second est validée, mais **l'image n'a pas pu être construite dans l'environnement de
+> développement** (pas de moteur Docker disponible). À vérifier lors du premier déploiement.
+
+### Sans Docker
+
+```bash
+npm ci
+npm run build
+SETUP_CODE=un-code-long DATA_DIR=/chemin/vers/les/donnees npm start
+```
+
+`npm start` met la base à niveau, puis lance le serveur sur le port 3000 (réglable par `PORT`).
+
+### Ajouter une communauté
+
+1. Lancer une nouvelle installation : un nouveau bloc dans `docker-compose.yml`, ou un
+   nouveau `npm start` avec un autre `DATA_DIR` et un autre `PORT`. **Le code est le même.**
+2. Ouvrir son adresse, créer le compte administrateur (avec le `SETUP_CODE`).
+3. Suivre l'assistant : partir de zéro, ou importer le pack d'une autre communauté.
+
+### Mettre à jour
+
+Récupérer la nouvelle version du code, reconstruire (`npm run build` ou
+`docker compose up -d --build`), redémarrer chaque installation. Les évolutions de la base
+s'appliquent toutes seules au démarrage ; le paramétrage et les contenus sont conservés.
+Un nouveau module arrive désactivé : chaque communauté décide de l'activer.
+
+### Sauvegarder
+
+**Sauvegarder une communauté = copier son dossier de données** (base, images, secret),
+de préférence application arrêtée. En complément, Administration › Export et import
+produit un pack .zip du paramétrage et des contenus, sans aucune donnée personnelle.
+
+### Sécurité et données personnelles
+
+- Le `SETUP_CODE` est obligatoire en production pour créer le premier compte.
+- Servez toujours l'application en https : le cookie de session est alors réservé aux
+  connexions chiffrées.
+- Les mots de passe ne sont jamais enregistrés en clair, ni les jetons de session et
+  d'invitation.
+- Le journal d'activité est pseudonymisé et purgé après la durée réglée dans les
+  paramètres (12 mois par défaut).
+- Chaque membre dispose de la page « Mes données » : consultation, export, suppression.
+- Hébergez les données dans l'Union européenne.
 
 ## Vérifier que tout fonctionne
 
@@ -100,17 +181,20 @@ npm run lint      # contrôle de la qualité du code
 npm run typecheck # contrôle de la cohérence des types
 ```
 
-Les tests couvrent notamment : l'activation et la désactivation de chaque module, le
-fonctionnement d'une communauté sans base de connaissance, les droits par rôle, les comptes
-et invitations, le chargement des packs, le journal d'activité, les contrastes du thème, et
-les règles d'architecture (aucun terme métier dans le code, modules indépendants).
+Les tests (182) couvrent notamment : l'activation et la désactivation de chaque module, le
+fonctionnement d'une communauté sans base de connaissance, le calcul du score d'un quiz,
+les droits par rôle, l'export puis l'import d'une communauté (à l'identique, sans donnée
+personnelle), les imports en masse (dont les messages d'erreur par ligne), la recherche,
+les aperçus de partage, la suppression d'un compte, les contrastes du thème, et les règles
+d'architecture (aucun terme métier dans le code, modules indépendants).
 
 ## Organisation du code
 
 ```
-prisma/schema/      description des tables (un fichier pour le moteur, puis un par module)
+prisma/schema/      description des tables : moteur, quiz, actualités, base de connaissance
 prisma/migrations/  évolutions de la base, appliquées automatiquement au démarrage
 seed/packs/         les deux packs d'exemple
+modeles/            modèles de fichiers d'import (questions, articles)
 scripts/            lancement, démonstration, chargement des exemples
 src/
   registry.ts       LA LISTE DES MODULES INSTALLÉS
@@ -119,17 +203,26 @@ src/
     modules/          le registre : ce qu'un module déclare, et ce qui en découle
     auth/             comptes, mots de passe, sessions, rôles, droits
     community/        configuration de la communauté
+    setup/            assistant de configuration
     theme/            couleurs, contrastes, thèmes clair et sombre
     i18n/             libellés et vocabulaire
+    categories/       catégories, communes à tous les modules
+    content/          liens entre contenus, mots-clés, champs liés entre modules
+    search/           recherche globale
+    share/            liens courts et aperçus de partage
+    privacy/          « Mes données » : export et suppression
     activity/         journal d'activité (pseudonymisé)
     notifications/    file d'attente et envoi des e-mails
     jobs/             tâches planifiées
-    media/            fichiers (logo, images)
-    pack/             lecture et application d'un pack
+    media/            médiathèque
+    pack/             export et import de packs
+    import/           lecture des fichiers d'import en masse
     request/          contexte d'une visite, fabriques de pages
+    actions/          actions des formulaires du moteur
     ui/               composants d'interface partagés
   modules/
-    quiz/ news/ knowledge/   un dossier par module : fiche (module.ts), libellés, écrans
+    quiz/ news/ knowledge/   un dossier par module : fiche (module.ts), libellés, règles,
+                             accès à la base, écrans, pack, import
 tests/              tests automatisés
 ```
 
@@ -159,8 +252,11 @@ menu, ses blocs d'accueil et ses écrans d'administration, sans autre modificati
 | Polices | Polices système | Rien n'est téléchargé depuis un site tiers |
 | Icônes | Dessinées dans `src/core/ui/icons.tsx` | Pas de dépendance |
 
-Dépendances d'exécution : `next`, `react`, `@prisma/client` et son adaptateur SQLite, `zod`
-(contrôle des données), `nodemailer` (e-mails).
+Dépendances d'exécution, chacune pour un besoin précis : `next` et `react` (socle),
+`prisma` et son adaptateur SQLite (base), `zod` (contrôle des données), `nodemailer`
+(e-mails), `react-markdown` et `remark-gfm` (affichage des contenus), `@tiptap/*` (éditeur
+visuel), `yaml` (en-têtes des fichiers Markdown), `fflate` (fichiers .zip), `papaparse`
+(fichiers CSV).
 
 **À savoir sur Next.js 16.** Les pages qui dépendent de la personne connectée doivent être
 entourées d'une « zone d'attente ». Ici, c'est fait une fois pour toutes par les fabriques
