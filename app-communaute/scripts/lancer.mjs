@@ -8,7 +8,7 @@
  * Avant de démarrer, la base de la communauté est mise à niveau automatiquement.
  * En pratique, on passe par les raccourcis de package.json : npm run dev, npm start…
  */
-import { chargerEnv, dossierDe, lancer, mettreBaseANiveau } from "./outils.mjs";
+import { chargerEnv, dossierDe, exigerPortLibre, lancer, mettreBaseANiveau } from "./outils.mjs";
 
 chargerEnv();
 
@@ -22,6 +22,7 @@ const env = {};
 if (communaute) env.DATA_DIR = dossierDe(communaute);
 if (port) env.PORT = port;
 
+await exigerPortLibre(port ?? process.env.PORT ?? "3000");
 mettreBaseANiveau(env);
 const serveur = lancer("next", [mode], env);
 serveur.on("exit", (code) => process.exit(code ?? 0));

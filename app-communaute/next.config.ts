@@ -21,13 +21,20 @@ import type { NextConfig } from "next";
  * démarrage : pas besoin de reconstruire l'application quand APP_URL change.
  */
 function allowedOrigins(): string[] {
+  const origins: string[] = [];
   const appUrl = process.env.APP_URL?.trim();
-  if (!appUrl) return [];
-  try {
-    return [new URL(appUrl).host];
-  } catch {
-    return [];
+  if (appUrl) {
+    try {
+      origins.push(new URL(appUrl).host);
+    } catch {
+      // Adresse mal écrite : ignorée.
+    }
   }
+  // Filet de sécurité dans GitHub Codespaces : les adresses du relais du codespace.
+  if (process.env.CODESPACES === "true") {
+    origins.push(`*.${process.env.GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN || "app.github.dev"}`);
+  }
+  return origins;
 }
 const nextConfig: NextConfig = {
   cacheComponents: true,

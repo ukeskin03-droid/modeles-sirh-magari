@@ -4,6 +4,7 @@
  * Windows, macOS et Linux.
  */
 import { spawn, spawnSync } from "node:child_process";
+import net from "node:net";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -68,4 +69,25 @@ export function lancer(programme, args, env = {}) {
 /** Met la base à niveau : applique les évolutions de structure pas encore appliquées. */
 export function mettreBaseANiveau(env = {}) {
   executer("prisma", ["migrate", "deploy"], env);
+}
+
+/**
+ * Vérifie qu'aucun autre programme n'utilise déjà le port. Sinon, le nouveau serveur
+ * ne pourrait pas démarrer et l'ANCIENNE version continuerait de répondre, sans que
+ * rien ne le signale clairement. On s'arrête donc avec une explication.
+ */
+export async function exigerPortLibre(port) {
+  const libre = await new Promise((resolve) => {
+    const essai = net.createServer();
+    essai.once("error", () => resolve(false));
+    essai.once("listening", () => essai.close(() => resolve(true)));
+    essai.listen(Number(port));
+  });
+  if (libre) return;
+  console.error(
+    `\n  ✖ Le port ${port} est déjà utilisé : l'application tourne sans doute déjà dans un autre terminal.\n` +
+      `    Arrêtez-la d'abord (Ctrl+C dans ce terminal, ou fermez-le avec l'icône corbeille),\n` +
+      `    puis relancez cette commande.\n`,
+  );
+  process.exit(1);
 }
