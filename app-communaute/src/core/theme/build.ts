@@ -98,17 +98,19 @@ export function themeToCss(theme: BuiltTheme): string {
 export type ContrastIssue = { token: string; mode: "light" | "dark"; ratio: number };
 
 /**
- * Signale les couleurs choisies qu'il a fallu corriger fortement pour rester lisibles
- * (ex. un jaune très clair). Utilisé par l'assistant pour afficher une alerte.
+ * Signale une couleur choisie trop claire pour servir d'aplat sur fond clair (ex. un jaune
+ * pâle) : l'application la corrigera, mais le rendu s'éloignera de la couleur voulue.
+ * Utilisé par l'assistant pour afficher une alerte.
+ *
+ * Seul le thème clair est contrôlé : en thème sombre, il est normal que l'application
+ * éclaircisse les couleurs, et cela ne trahit pas le choix de la communauté.
  */
 export function contrastWarnings(colors: ThemeColors): ContrastIssue[] {
   const issues: ContrastIssue[] = [];
-  const theme = buildTheme(colors, "systeme");
-  for (const mode of ["light", "dark"] as const) {
-    for (const name of ["primary", "accent"] as const) {
-      const ratio = contrast(colors[name], theme[mode].surface);
-      if (ratio < GRAPHIC_MINIMUM) issues.push({ token: name, mode, ratio });
-    }
+  const surface = buildTheme(colors, "systeme").light.surface;
+  for (const name of ["primary", "accent"] as const) {
+    const ratio = contrast(colors[name], surface);
+    if (ratio < GRAPHIC_MINIMUM) issues.push({ token: name, mode: "light", ratio });
   }
   return issues;
 }

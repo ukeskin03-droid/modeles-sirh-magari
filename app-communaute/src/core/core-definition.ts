@@ -11,6 +11,7 @@ import { cleanupAuthData } from "@/core/auth/sessions";
 import { coreLabels } from "@/core/i18n/labels.fr";
 import type { Contribution } from "@/core/modules/types";
 import { dispatchPendingNotifications } from "@/core/notifications/service";
+import { cleanupTempFiles } from "@/core/uploads/temp";
 
 export const coreDefinition: Contribution = {
   labels: coreLabels,
@@ -18,6 +19,22 @@ export const coreDefinition: Contribution = {
   navigation: [{ id: "core.home", labelKey: "core.nav.home", href: "/", icon: "home" }],
 
   adminScreens: [
+    {
+      id: "core.media",
+      labelKey: "core.admin.media.title",
+      descriptionKey: "core.admin.media.description",
+      href: "/admin/medias",
+      icon: "image",
+      action: "core.media.manage",
+    },
+    {
+      id: "core.import",
+      labelKey: "core.admin.import.title",
+      descriptionKey: "core.admin.import.description",
+      href: "/admin/import",
+      icon: "upload",
+      action: "core.media.manage",
+    },
     {
       id: "core.modules",
       labelKey: "core.admin.modules.title",
@@ -32,6 +49,14 @@ export const coreDefinition: Contribution = {
       descriptionKey: "core.admin.settings.description",
       href: "/admin/parametres",
       icon: "settings",
+      action: "core.community.configure",
+    },
+    {
+      id: "core.pack",
+      labelKey: "core.admin.pack.title",
+      descriptionKey: "core.admin.pack.description",
+      href: "/admin/pack",
+      icon: "box",
       action: "core.community.configure",
     },
     {
@@ -55,6 +80,8 @@ export const coreDefinition: Contribution = {
   actions: [
     // Entrer dans l'administration : éditeurs et administrateurs
     { key: "core.admin.access", minRole: "editor" },
+    // Gérer les images : éditeurs et administrateurs
+    { key: "core.media.manage", minRole: "editor" },
     // Tout ce qui touche à la configuration : administrateurs seulement
     { key: "core.community.configure", minRole: "admin" },
     { key: "core.users.manage", minRole: "admin" },
@@ -88,6 +115,7 @@ export const coreDefinition: Contribution = {
   scheduledTasks: [
     { type: "activity.purge", labelKey: "core.job.activityPurge", everyMinutes: 24 * 60, handler: async () => void (await purgeActivityFromSettings()) },
     { type: "notifications.dispatch", labelKey: "core.job.notificationsDispatch", everyMinutes: 5, handler: async () => void (await dispatchPendingNotifications()) },
+    { type: "uploads.cleanup", labelKey: "core.job.uploadsCleanup", everyMinutes: 60, handler: async () => void (await cleanupTempFiles()) },
     { type: "auth.cleanup", labelKey: "core.job.authCleanup", everyMinutes: 24 * 60, handler: async () => void (await cleanupAuthData()) },
   ],
 };

@@ -1,0 +1,54 @@
+[
+  {
+    "ref": "q-exemple-1",
+    "type": "single",
+    "statement": "[EXEMPLE À REMPLACER] Question à choix unique ?",
+    "options": [
+      {
+        "label": "Première réponse",
+        "correct": true
+      },
+      {
+        "label": "Deuxième réponse",
+        "correct": false
+      }
+    ],
+    "explanation": "Explication affichée avec la correction.",
+    "difficulty": 1,
+    "category": "",
+    "links": [
+      "knowledge.article:identifiant-du-contenu"
+    ]
+  },
+  {
+    "ref": "q-exemple-2",
+    "type": "multiple",
+    "statement": "[EXEMPLE À REMPLACER] Question à choix multiple ?",
+    "options": [
+      {
+        "label": "Première réponse",
+        "correct": true
+      },
+      {
+        "label": "Deuxième réponse",
+        "correct": false
+      },
+      {
+        "label": "Troisième réponse",
+        "correct": true
+      }
+    ],
+    "explanation": "",
+    "difficulty": 2,
+    "category": ""
+  },
+  {
+    "ref": "q-exemple-3",
+    "type": "truefalse",
+    "statement": "[EXEMPLE À REMPLACER] Affirmation à juger.",
+    "answer": true,
+    "explanation": "",
+    "difficulty": 3,
+    "category": ""
+  }
+]

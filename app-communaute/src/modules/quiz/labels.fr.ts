@@ -166,6 +166,14 @@ export const quizLabels: Record<string, string> = {
   "quiz.qform.difficulty": "Difficulté",
   "quiz.qform.ref": "Référence : {ref}",
 
+  // ── Import en masse
+  "quiz.import.title": "{termes:quiz.question} (fichier CSV ou JSON)",
+  "quiz.import.description": "Un élément par ligne. Une référence déjà connue met à jour l'élément existant au lieu d'en créer un autre.",
+  "quiz.import.template.csv": "Modèle pour tableur (CSV)",
+  "quiz.import.template.json": "Modèle JSON",
+  "quiz.import.col.line": "Ligne",
+  "quiz.import.col.result": "Résultat",
+
   // ── Messages d'erreur
   "quiz.error.type": "Type inconnu (attendu : single, multiple ou truefalse).",
   "quiz.error.statement": "L'énoncé est obligatoire.",

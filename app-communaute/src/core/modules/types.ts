@@ -151,6 +151,46 @@ export type LinkedFieldDefinition = {
   importColumn: string;
 };
 
+/** Un fichier envoyé par l'utilisateur. */
+export type UploadedFile = { name: string; data: Buffer };
+
+/** Ce dont un import a besoin pour travailler. */
+export type ImportContext = { t: Translator; active: readonly ModuleDefinition[] };
+
+/** Une ligne de la prévisualisation d'un import. */
+export type ImportRow = {
+  /** Identifiant de la ligne dans le fichier (sert à l'exclure de l'import) */
+  id: string;
+  /** Contenu des colonnes ; la dernière est l'état (« Création », « Mise à jour »…) */
+  cells: string[];
+  status: "ok" | "warning" | "error";
+  /** Messages, chacun précisant la ligne ou le fichier concerné */
+  messages: string[];
+};
+
+export type ImportPreview = { headers: string[]; rows: ImportRow[]; warnings: string[] };
+export type ImportResult = { created: number; updated: number; unchanged: number; warnings: string[] };
+
+/**
+ * Un format d'import en masse proposé par le module (ex. un fichier de questions).
+ * L'import se fait en deux temps : « preview » montre ce qui serait fait, ligne par
+ * ligne ; « commit » enregistre, en laissant de côté les lignes exclues ou refusées.
+ */
+export type ImportFormatDefinition = {
+  id: string;
+  labelKey: string;
+  descriptionKey: string;
+  /** Extensions acceptées, ex. ".csv,.json" */
+  accept: string;
+  multiple: boolean;
+  /** Droit nécessaire */
+  action: string;
+  /** Modèles de fichiers téléchargeables */
+  templates: { filename: string; labelKey: string; contentType: string; build: (context: ImportContext) => string }[];
+  preview: (files: UploadedFile[], context: ImportContext) => Promise<ImportPreview>;
+  commit: (files: UploadedFile[], excluded: ReadonlySet<string>, context: ImportContext) => Promise<ImportResult>;
+};
+
 /** Ce que le moteur et les modules ont en commun. */
 export type Contribution = {
   /** Textes du module (fichier labels.fr.ts) */
@@ -181,6 +221,10 @@ export type ModuleDefinition = Contribution & {
   contentTypes: ContentTypeDefinition[];
   packSections: PackSectionDefinition[];
   linkedFields: LinkedFieldDefinition[];
+  /** Formats d'import en masse proposés par le module */
+  importFormats?: ImportFormatDefinition[];
+  /** Étapes que le module ajoute à l'assistant de configuration (avant le récapitulatif) */
+  wizardSteps?: { id: string; labelKey: string; descriptionKey: string; href: string }[];
   /** Modules dont celui-ci est le prolongement (ex. le quiz en direct nécessite le quiz).
    *  L'interrupteur n'est proposé que si ces modules sont actifs. */
   requires?: string[];

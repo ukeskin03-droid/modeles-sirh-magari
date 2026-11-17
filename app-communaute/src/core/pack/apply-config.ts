@@ -6,23 +6,13 @@
  * module que cette application ne connaît pas »).
  */
 import { DEFAULT_HOME, DEFAULT_SETTINGS, DEFAULT_THEME } from "@/core/community/schema";
-import { loadCommunity, saveCommunity } from "@/core/community/service";
+import { saveCommunity } from "@/core/community/service";
 import { db, type JsonValue } from "@/core/db/client";
-import { deleteMedia, saveMedia } from "@/core/media/service";
 import { activeModules, allModules } from "@/core/modules/registry";
+import { importPackMedia, type MediaImportReport } from "./media";
 import { PackError, type Pack } from "./schema";
 
-async function importImage(pack: Pack, filePath: string | undefined, alt: string, warnings: string[]): Promise<string | null> {
-  if (!filePath) return null;
-  const data = pack.files.get(filePath);
-  if (!data) {
-    warnings.push(`Le fichier « ${filePath} » indiqué dans pack.json est absent du pack.`);
-    return null;
-  }
-  return saveMedia({ filename: filePath, data, alt, isPublic: true });
-}
-
-export async function applyPackConfig(pack: Pack): Promise<{ warnings: string[] }> {
+export async function applyPackConfig(pack: Pack): Promise<{ warnings: string[]; media: MediaImportReport }> {
   const { manifest } = pack;
   const warnings: string[] = [];
   const installed = allModules();
@@ -38,26 +28,28 @@ export async function applyPackConfig(pack: Pack): Promise<{ warnings: string[] 
     }
   }
 
-  // ── Images d'identité
-  const previous = await loadCommunity();
-  const logoMediaId = await importImage(pack, manifest.identity.logo, manifest.identity.name, warnings);
-  const faviconMediaId = await importImage(pack, manifest.identity.favicon, "", warnings);
+  // ── Médias (dont le logo et le favicon, visibles sans connexion)
+  const identityPaths = [manifest.identity.logo, manifest.identity.favicon].filter((path): path is string => Boolean(path));
+  const media = await importPackMedia(pack.files, new Set(identityPaths));
+  warnings.push(...media.warnings);
+  const imageId = (path: string | undefined) => {
+    if (!path) return null;
+    const id = media.idByPath.get(path);
+    if (!id) warnings.push(`Le fichier « ${path} » indiqué dans pack.json est absent du pack.`);
+    return id ?? null;
+  };
 
   // ── Configuration
   await saveCommunity({
     name: manifest.identity.name,
     subtitle: manifest.identity.subtitle,
-    logoMediaId,
-    faviconMediaId,
+    logoMediaId: imageId(manifest.identity.logo),
+    faviconMediaId: imageId(manifest.identity.favicon),
     theme: manifest.theme ?? DEFAULT_THEME,
     vocabulary: manifest.vocabulary,
     home: manifest.home ?? DEFAULT_HOME,
     settings: manifest.settings ?? DEFAULT_SETTINGS,
   });
-  // Les anciennes images d'identité ne servent plus.
-  for (const oldId of [previous.logoMediaId, previous.faviconMediaId]) {
-    if (oldId) await deleteMedia(oldId);
-  }
 
   // ── État et réglages des modules
   for (const mod of installed) {
@@ -87,5 +79,5 @@ export async function applyPackConfig(pack: Pack): Promise<{ warnings: string[] 
     }
   }
 
-  return { warnings };
+  return { warnings, media };
 }

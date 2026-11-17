@@ -22,9 +22,11 @@ describe("droits par rôle", () => {
     expect(can("editor", "core.community.configure")).toBe(false);
     expect(can("editor", "core.users.manage")).toBe(false);
     expect(can("editor", "core.technical.view")).toBe(false);
-    // Ses écrans d'administration : uniquement ceux des modules
-    expect(adminScreensFor(everything, "editor").every((screen) => !screen.id.startsWith("core."))).toBe(true);
-    expect(adminScreensFor(everything, "editor").length).toBeGreaterThan(0);
+    // Ses écrans d'administration : les contenus des modules et les outils d'édition
+    // (médiathèque, imports), jamais la configuration.
+    const screens = adminScreensFor(everything, "editor").map((screen) => screen.id);
+    expect(screens).toContain("quiz.manage");
+    for (const forbidden of ["core.modules", "core.settings", "core.users", "core.technical", "core.pack", "core.setup"]) expect(screens).not.toContain(forbidden);
   });
 
   it("un administrateur peut tout faire", () => {

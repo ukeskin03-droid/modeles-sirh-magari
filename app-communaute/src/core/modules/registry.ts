@@ -20,6 +20,7 @@ import type {
   AdminScreenDefinition,
   ContentTypeDefinition,
   HomeBlockDefinition,
+  ImportFormatDefinition,
   LinkedFieldDefinition,
   PackSectionDefinition,
   ModuleDefinition,
@@ -123,6 +124,11 @@ export function linkedFieldsFor(active: readonly ModuleDefinition[], hostType: s
     .filter((field) => field.hostType === hostType && findContentType(field.targetType, active) !== undefined);
 }
 
+/** Les formats d'import en masse des modules ACTIFS. */
+export function importFormatsFor(active: readonly ModuleDefinition[]): (ImportFormatDefinition & { moduleKey: string })[] {
+  return active.flatMap((module) => (module.importFormats ?? []).map((format) => ({ ...format, moduleKey: module.key })));
+}
+
 /** Toutes les sections de pack des modules installés (un pack s'importe même pour un module inactif). */
 export function packSectionsCatalog(): (PackSectionDefinition & { moduleKey: string })[] {
   return installedModules.flatMap((module) => module.packSections.map((section) => ({ ...section, moduleKey: module.key })));
@@ -179,6 +185,7 @@ export function registryProblems(): string[] {
     }
     seenSegments.add(mod.routeSegment);
 
+    const actionKeys = new Set(mod.actions.map((action) => action.key));
     requireLabel(owner, mod.nameKey);
     requireLabel(owner, mod.descriptionKey);
     for (const key of Object.keys(mod.labels)) {
@@ -197,7 +204,6 @@ export function registryProblems(): string[] {
       requireLabel(owner, block.labelKey);
       if (!block.id.startsWith(`${mod.key}.`)) problems.push(`${owner} : le bloc « ${block.id} » doit commencer par « ${mod.key}. »`);
     }
-    const actionKeys = new Set(mod.actions.map((action) => action.key));
     for (const action of mod.actions) {
       if (!action.key.startsWith(`${mod.key}.`)) problems.push(`${owner} : l'action « ${action.key} » doit commencer par « ${mod.key}. »`);
     }
@@ -215,6 +221,12 @@ export function registryProblems(): string[] {
       if (!contentType.type.startsWith(`${mod.key}.`)) problems.push(`${owner} : le type « ${contentType.type} » doit commencer par « ${mod.key}. »`);
     }
     for (const section of mod.packSections) requireLabel(owner, section.labelKey);
+    for (const format of mod.importFormats ?? []) {
+      requireLabel(owner, format.labelKey);
+      requireLabel(owner, format.descriptionKey);
+      for (const template of format.templates) requireLabel(owner, template.labelKey);
+      if (!actionKeys.has(format.action)) problems.push(`${owner} : le format d'import « ${format.id} » utilise une action non déclarée (${format.action})`);
+    }
     for (const field of mod.linkedFields) {
       requireLabel(owner, field.labelKey);
       requireLabel(owner, field.readerLabelKey);

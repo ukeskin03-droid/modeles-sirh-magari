@@ -1,16 +1,16 @@
 /**
- * ADMINISTRATION › PARAMÈTRES — statut de la communauté, aperçu lecteur, et rappel
- * de l'identité et de l'apparence en vigueur.
+ * ADMINISTRATION › PARAMÈTRES — statut de la communauté, aperçu lecteur, accès aux écrans
+ * de paramétrage (les mêmes que ceux de l'assistant) et autres réglages.
  */
+import Link from "next/link";
 import { setStatusAction } from "@/core/actions/admin";
+import { saveSettingsAction } from "@/core/actions/setup";
 import { startPreviewAction } from "@/core/actions/session";
-import { displayName } from "@/core/community/translator";
-import { db } from "@/core/db/client";
-import { defaultVocabulary } from "@/core/modules/registry";
 import { getActiveModules, getCommunity, getT } from "@/core/request/context";
 import { titleFrom } from "@/core/request/metadata";
 import { adminPage } from "@/core/request/pages";
-import { Alert, Badge, buttonClass, Card, PageContainer, PageHeader, SectionTitle } from "@/core/ui/elements";
+import { setupSteps } from "@/core/setup/steps";
+import { Badge, buttonClass, Card, Field, PageContainer, PageHeader, SectionTitle, SelectField } from "@/core/ui/elements";
 import { ActionForm, SubmitButton } from "@/core/ui/forms";
 import { Icon } from "@/core/ui/icons";
 
@@ -19,52 +19,7 @@ export const generateMetadata = titleFrom("core.admin.settings.title");
 async function SettingsPage() {
   const [community, t, active] = await Promise.all([getCommunity(), getT(), getActiveModules()]);
   const isOpen = community.status === "open";
-  const categories = await db().category.findMany({ where: { parentId: null }, orderBy: { position: "asc" }, include: { children: { orderBy: { position: "asc" } } } });
-  // Vocabulaire : uniquement les termes des modules actifs.
-  const terms = Object.entries(defaultVocabulary(active));
-
-  const rows: { label: string; value: React.ReactNode }[] = [
-    { label: t("core.admin.settings.identity.name"), value: displayName(community, t) },
-    { label: t("core.admin.settings.identity.subtitle"), value: community.subtitle || "—" },
-    { label: t("core.admin.settings.identity.font"), value: t(`core.font.${community.theme.font}`) },
-    { label: t("core.admin.settings.identity.primary"), value: <Swatch color={community.theme.colors.primary} /> },
-    { label: t("core.admin.settings.identity.accent"), value: <Swatch color={community.theme.colors.accent} /> },
-    {
-      label: t("core.admin.settings.identity.vocabulary"),
-      value: (
-        <ul className="space-y-0.5">
-          {terms.map(([key, fallback]) => {
-            const term = community.vocabulary[key] ?? fallback;
-            return (
-              <li key={key}>
-                {term.singular} / {term.plural}
-              </li>
-            );
-          })}
-        </ul>
-      ),
-    },
-    {
-      label: t("core.admin.settings.identity.categories"),
-      value:
-        categories.length === 0 ? (
-          t("core.admin.settings.identity.none")
-        ) : (
-          <ul className="space-y-0.5">
-            {categories.map((category) => (
-              <li key={category.id}>
-                {category.name}
-                {category.children.length > 0 && <span className="text-muted"> › {category.children.map((child) => child.name).join(", ")}</span>}
-              </li>
-            ))}
-          </ul>
-        ),
-    },
-    {
-      label: t("core.admin.settings.identity.retention"),
-      value: t("core.admin.settings.identity.retentionValue", { months: community.settings.activityRetentionMonths }),
-    },
-  ];
+  const screens = setupSteps(active, false).filter((step) => step.slug !== "recapitulatif");
 
   return (
     <PageContainer narrow>
@@ -114,31 +69,48 @@ async function SettingsPage() {
         </Card>
 
         <Card>
-          <SectionTitle>{t("core.admin.settings.identity.title")}</SectionTitle>
-          <div className="mt-3">
-            <Alert>{t("core.admin.settings.identity.note")}</Alert>
-          </div>
-          <dl className="mt-4 divide-y divide-line text-sm">
-            {rows.map((row) => (
-              <div key={row.label} className="grid gap-1 py-3 sm:grid-cols-3 sm:gap-4">
-                <dt className="font-medium text-muted">{row.label}</dt>
-                <dd className="sm:col-span-2">{row.value}</dd>
-              </div>
+          <SectionTitle>{t("core.admin.settings.screens.title")}</SectionTitle>
+          <p className="mt-2 text-sm text-muted">{t("core.admin.settings.screens.text")}</p>
+          <ul className="mt-4 grid gap-2 sm:grid-cols-2">
+            {screens.map((step) => (
+              <li key={step.slug}>
+                <Link href={step.href} className="flex min-h-12 items-center gap-3 rounded-lg border border-line px-3 py-2 text-sm font-medium hover:bg-surface-2">
+                  <Icon name={step.icon} className="size-5 text-primary-text" />
+                  {t(step.labelKey)}
+                </Link>
+              </li>
             ))}
-          </dl>
+          </ul>
+        </Card>
+
+        <Card>
+          <SectionTitle>{t("core.admin.settings.other.title")}</SectionTitle>
+          <ActionForm action={saveSettingsAction} className="mt-4 space-y-4">
+            <Field
+              label={t("core.admin.settings.other.retention")}
+              name="activityRetentionMonths"
+              type="number"
+              min={1}
+              max={60}
+              required
+              defaultValue={community.settings.activityRetentionMonths}
+              hint={t("core.admin.settings.other.retentionHint")}
+            />
+            <SelectField
+              label={t("core.admin.settings.other.share")}
+              name="sharePreview"
+              defaultValue={community.settings.sharePreview}
+              options={[
+                { value: "full", label: t("core.admin.settings.other.share.full") },
+                { value: "neutral", label: t("core.admin.settings.other.share.neutral") },
+              ]}
+            />
+            <p className="text-sm text-muted">{t("core.admin.settings.other.shareHint")}</p>
+            <SubmitButton>{t("core.form.save")}</SubmitButton>
+          </ActionForm>
         </Card>
       </div>
     </PageContainer>
-  );
-}
-
-/** Pastille de couleur accompagnée de son code. */
-function Swatch({ color }: { color: string }) {
-  return (
-    <span className="inline-flex items-center gap-2">
-      <span aria-hidden="true" className="inline-block size-5 rounded border border-line" style={{ backgroundColor: color }} />
-      <code className="text-xs">{color}</code>
-    </span>
   );
 }
 

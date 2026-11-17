@@ -4,14 +4,16 @@ import { linkedIds } from "@/core/content/links";
 import { tagsOf } from "@/core/content/tags";
 import { getT } from "@/core/request/context";
 import { ButtonLink, Card, categoryOptions, Field, PageContainer, PageHeader, SelectField, TextAreaField } from "@/core/ui/elements";
+import { editorImages, editorLabels } from "@/core/ui/editor-labels";
 import { ActionForm, SubmitButton } from "@/core/ui/forms";
+import { RichTextEditor } from "@/core/ui/RichTextEditor";
 import { deleteArticleAction, saveArticleAction } from "../actions";
 import { ARTICLE_STATUSES, ARTICLE_TYPE, RELATED } from "../model";
 import { getArticleById, listArticlesForAdmin } from "../service";
 
 /** Création ou modification d'un article (sans identifiant dans l'adresse : création). */
 export async function KnowledgeEditPage({ params }: { params: Promise<{ id?: string }> }) {
-  const [{ id }, t, categories, all] = await Promise.all([params, getT(), listCategories(), listArticlesForAdmin()]);
+  const [{ id }, t, categories, all, images] = await Promise.all([params, getT(), listCategories(), listArticlesForAdmin(), editorImages()]);
   const article = id ? await getArticleById(id) : null;
   if (id && !article) notFound();
   const [tags, related] = article
@@ -27,7 +29,7 @@ export async function KnowledgeEditPage({ params }: { params: Promise<{ id?: str
           {article && <input type="hidden" name="id" value={article.id} />}
           <Field label={t("knowledge.form.title")} name="title" required maxLength={150} defaultValue={article?.title ?? ""} />
           <TextAreaField label={t("knowledge.form.summary")} name="summary" maxLength={500} rows={2} defaultValue={article?.summary ?? ""} hint={t("knowledge.form.summaryHint")} />
-          <TextAreaField label={t("knowledge.form.content")} name="content" rows={14} defaultValue={article?.content ?? ""} hint={t("knowledge.form.contentHint")} />
+          <RichTextEditor name="content" label={t("knowledge.form.content")} defaultValue={article?.content ?? ""} hint={t("core.editor.hint")} images={images} labels={editorLabels(t)} />
           <div className="grid gap-4 sm:grid-cols-2">
             <SelectField label={t("core.category.label")} name="categoryId" defaultValue={article?.categoryId ?? ""} options={categoryOptions(categories, t("core.category.none"))} />
             <SelectField

@@ -209,3 +209,21 @@ body {
 .markdown-compact > * + * {
   margin-top: 0.6em;
 }
+
+/* Éditeur visuel : repères pendant la saisie d'un tableau ou la sélection d'une image. */
+.markdown .tableWrapper {
+  overflow-x: auto;
+}
+.markdown .selectedCell {
+  background: var(--c-primary-soft);
+}
+.markdown img.ProseMirror-selectednode {
+  outline: 2px solid var(--c-primary-text);
+}
+.markdown p.is-editor-empty:first-child::before {
+  color: var(--c-muted);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}

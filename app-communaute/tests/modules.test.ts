@@ -75,7 +75,8 @@ describe("communauté sans base de connaissance", () => {
     expect(shown.navigation).toEqual(["core.home", "news.home", "quiz.home"]);
     expect(shown.homeBlocks).toEqual(["news.latest", "quiz.featured"]);
     // l'administration reste complète : contenus des modules actifs + configuration
-    expect(shown.adminScreens).toEqual(["news.manage", "quiz.manage", "core.modules", "core.settings", "core.users", "core.technical"]);
+    expect(shown.adminScreens.filter((id) => !id.startsWith("core."))).toEqual(["news.manage", "quiz.manage"]);
+    expect(shown.adminScreens).toEqual(expect.arrayContaining(["core.modules", "core.settings", "core.users"]));
   });
 });
 

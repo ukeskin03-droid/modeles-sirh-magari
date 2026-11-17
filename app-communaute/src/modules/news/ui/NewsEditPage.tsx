@@ -4,7 +4,9 @@ import { LinkedFieldsEditor } from "@/core/content/linked-fields";
 import { toDateTimeInput } from "@/core/i18n/format";
 import { getT } from "@/core/request/context";
 import { ButtonLink, Card, categoryOptions, Field, PageContainer, PageHeader, SelectField, TextAreaField } from "@/core/ui/elements";
+import { editorImages, editorLabels } from "@/core/ui/editor-labels";
 import { ActionForm, SubmitButton } from "@/core/ui/forms";
+import { RichTextEditor } from "@/core/ui/RichTextEditor";
 import { deleteNewsAction, saveNewsAction } from "../actions";
 import { NEWS_STATUSES, newsState } from "../model";
 import { getNewsById } from "../service";
@@ -12,7 +14,7 @@ import { StateBadge } from "./shared";
 
 /** Création ou modification d'une actualité (sans identifiant dans l'adresse : création). */
 export async function NewsEditPage({ params }: { params: Promise<{ id?: string }> }) {
-  const [{ id }, t, categories] = await Promise.all([params, getT(), listCategories()]);
+  const [{ id }, t, categories, images] = await Promise.all([params, getT(), listCategories(), editorImages()]);
   const item = id ? await getNewsById(id) : null;
   if (id && !item) notFound();
 
@@ -26,7 +28,7 @@ export async function NewsEditPage({ params }: { params: Promise<{ id?: string }
           {item && <input type="hidden" name="id" value={item.id} />}
           <Field label={t("news.form.title")} name="title" required maxLength={150} defaultValue={item?.title ?? ""} />
           <TextAreaField label={t("news.form.summary")} name="summary" maxLength={500} rows={2} defaultValue={item?.summary ?? ""} hint={t("news.form.summaryHint")} />
-          <TextAreaField label={t("news.form.content")} name="content" rows={12} defaultValue={item?.content ?? ""} hint={t("news.form.contentHint")} />
+          <RichTextEditor name="content" label={t("news.form.content")} defaultValue={item?.content ?? ""} hint={t("core.editor.hint")} images={images} labels={editorLabels(t)} />
           <div className="grid gap-4 sm:grid-cols-2">
             <SelectField label={t("core.category.label")} name="categoryId" defaultValue={item?.categoryId ?? ""} options={categoryOptions(categories, t("core.category.none"))} />
             <SelectField

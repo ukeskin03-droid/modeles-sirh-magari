@@ -1,0 +1,4 @@
+﻿ref;type;enonce;reponse_1;reponse_2;reponse_3;reponse_4;bonnes_reponses;explication;difficulte;categorie;article_lie
+q-exemple-1;unique;[EXEMPLE À REMPLACER] Question à choix unique ?;Première réponse;Deuxième réponse;Troisième réponse;;1;Explication affichée avec la correction.;1;;
+q-exemple-2;multiple;[EXEMPLE À REMPLACER] Question à choix multiple ?;Première réponse;Deuxième réponse;Troisième réponse;Quatrième réponse;1,3;Explication affichée avec la correction.;1;;
+q-exemple-3;vrai_faux;[EXEMPLE À REMPLACER] Affirmation à juger.;;;;;vrai;Explication affichée avec la correction.;1;;

@@ -10,6 +10,7 @@
  */
 import type { ModuleDefinition } from "@/core/modules/types";
 import { knowledgeContentTypes, knowledgeLinkedFields } from "./content";
+import { articlesImportFormat } from "./import";
 import { knowledgeLabels } from "./labels.fr";
 import { knowledgePackSections } from "./pack";
 import { KnowledgeHomeBlock } from "./ui/KnowledgeHomeBlock";
@@ -49,6 +50,8 @@ export const knowledgeModule: ModuleDefinition = {
   contentTypes: knowledgeContentTypes,
   packSections: knowledgePackSections,
   linkedFields: knowledgeLinkedFields,
+
+  importFormats: [articlesImportFormat],
 
   activityEvents: [],
   notificationEvents: [],

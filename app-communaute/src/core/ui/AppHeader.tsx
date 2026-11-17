@@ -99,6 +99,18 @@ export async function AppHeader() {
         </div>
       )}
 
+      {community.setupStep !== null && canConfigure && (
+        <div className="border-b border-warning-text/30 bg-warning-soft">
+          <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-3 px-4 py-2 text-sm">
+            <Icon name="settings" className="size-4" />
+            <p className="min-w-0 flex-1">{t("core.config.banner")}</p>
+            <Link href="/admin/configuration" className="font-semibold text-warning-text hover:underline">
+              {t("core.config.banner.link")}
+            </Link>
+          </div>
+        </div>
+      )}
+
       {community.status !== "open" && (
         <div className="border-b border-primary-text/20 bg-primary-soft">
           <div className="mx-auto flex max-w-5xl flex-wrap items-center gap-3 px-4 py-2 text-sm">

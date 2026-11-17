@@ -55,7 +55,6 @@ export const knowledgeLabels: Record<string, string> = {
   "knowledge.form.summary": "Résumé",
   "knowledge.form.summaryHint": "Une ou deux phrases, affichées dans les listes, la recherche et l'aperçu des liens partagés.",
   "knowledge.form.content": "Contenu",
-  "knowledge.form.contentHint": "Mise en forme Markdown : **gras**, # titre, - liste, [texte](adresse), tableaux.",
   "knowledge.form.status": "Statut",
   "knowledge.form.tags": "Mots-clés",
   "knowledge.form.tagsHint": "Séparés par des virgules.",
@@ -64,6 +63,13 @@ export const knowledgeLabels: Record<string, string> = {
   "knowledge.form.relatedEmpty": "Aucun autre contenu pour le moment.",
   "knowledge.form.delete.title": "Supprimer ce contenu ?",
   "knowledge.form.delete.text": "Cette action est définitive. Les liens qui pointaient vers ce contenu seront retirés.",
+
+  // ── Import en masse
+  "knowledge.import.title": "{termes:knowledge.article} (fichiers Markdown)",
+  "knowledge.import.description": "Un fichier .md par contenu. Le nom du fichier sert d'identifiant : le renvoyer met à jour le contenu existant.",
+  "knowledge.import.template": "Modèle de fichier (Markdown)",
+  "knowledge.import.col.file": "Fichier",
+  "knowledge.import.col.result": "Résultat",
 
   // ── Messages d'erreur
   "knowledge.error.title": "Le titre est obligatoire.",

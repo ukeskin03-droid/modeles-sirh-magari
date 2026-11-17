@@ -53,7 +53,6 @@ export const newsLabels: Record<string, string> = {
   "news.form.summary": "Résumé",
   "news.form.summaryHint": "Une ou deux phrases, affichées dans la liste et dans l'aperçu des liens partagés.",
   "news.form.content": "Contenu",
-  "news.form.contentHint": "Mise en forme Markdown : **gras**, # titre, - liste, [texte](adresse).",
   "news.form.status": "Statut",
   "news.status.draft": "Brouillon",
   "news.status.published": "Publié",

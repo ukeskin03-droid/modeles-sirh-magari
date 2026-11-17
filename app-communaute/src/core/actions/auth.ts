@@ -56,11 +56,13 @@ export async function setupAction(_state: FormState, data: FormData): Promise<Fo
     throw error;
   }
 
-  if (communityName) await saveCommunity({ name: communityName.slice(0, 80) });
+  // Communauté toute neuve : on ouvre l'assistant de configuration (étape 1).
+  const fresh = !community.exists;
+  if (communityName || fresh) await saveCommunity({ ...(communityName ? { name: communityName.slice(0, 80) } : {}), ...(fresh ? { setupStep: 0 } : {}) });
   await ensureRecurringJobs();
   await openSession(userId);
   await recordActivity({ type: "auth.login", userId });
-  redirect("/");
+  redirect(fresh ? "/admin/configuration" : "/");
 }
 
 export async function acceptInvitationAction(_state: FormState, data: FormData): Promise<FormState> {

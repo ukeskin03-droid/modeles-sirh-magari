@@ -18,6 +18,10 @@ import type { Pack } from "./schema";
 
 export type PackImportReport = {
   communityName: string;
+  /** Images de la médiathèque */
+  media: { created: number; updated: number; unchanged: number };
+  /** Modules qui seront actifs après l'import (noms affichables) */
+  activeModules: string[];
   /** Une ligne par section de contenu trouvée dans le pack */
   sections: { id: string; label: string; moduleKey: string; created: number; updated: number; unchanged: number }[];
   /** Remarques à montrer à l'utilisateur */
@@ -26,7 +30,7 @@ export type PackImportReport = {
 
 export async function importPack(pack: Pack, options: { dryRun?: boolean } = {}): Promise<PackImportReport> {
   return inTransaction(async () => {
-    const { warnings } = await applyPackConfig(pack);
+    const { warnings, media } = await applyPackConfig(pack);
     const t = await loadTranslator();
     const activeKeys = new Set(activeModules(await readModuleStates()).map((module) => module.key));
 
@@ -49,6 +53,12 @@ export async function importPack(pack: Pack, options: { dryRun?: boolean } = {})
       const hidden = allModules().find((module) => module.key === moduleKey);
       if (hidden) warnings.push(t("core.pack.hiddenModule", { module: t(hidden.nameKey) }));
     }
-    return { communityName: pack.manifest.identity.name, sections, warnings };
+    return {
+      communityName: pack.manifest.identity.name,
+      media: { created: media.created, updated: media.updated, unchanged: media.unchanged },
+      activeModules: allModules().filter((module) => activeKeys.has(module.key)).map((module) => t(module.nameKey)),
+      sections,
+      warnings,
+    };
   }, options);
 }
