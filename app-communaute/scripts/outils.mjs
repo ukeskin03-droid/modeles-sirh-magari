@@ -39,12 +39,29 @@ export function executer(programme, args, env = {}) {
   if (resultat.status !== 0) process.exit(resultat.status ?? 1);
 }
 
+/**
+ * Adresse publique quand l'application tourne dans GitHub Codespaces. Le navigateur y
+ * passe par une adresse du type https://<nom-du-codespace>-3001.app.github.dev, que le
+ * serveur ne peut pas deviner seul : sans elle, la connexion est refusée et les liens
+ * de partage pointeraient vers « localhost ». Hors Codespaces : rien (null).
+ */
+function adresseCodespaces(port) {
+  const nom = process.env.CODESPACE_NAME;
+  const domaine = process.env.GITHUB_CODESPACES_PORT_FORWARDING_DOMAIN || "app.github.dev";
+  return nom ? `https://${nom}-${port}.${domaine}` : null;
+}
+
 /** Lance un programme qui reste en fonctionnement (le serveur). */
 export function lancer(programme, args, env = {}) {
+  const complet = { ...process.env, ...env };
+  if (programme === "next" && !complet.APP_URL) {
+    const adresse = adresseCodespaces(complet.PORT || "3000");
+    if (adresse) complet.APP_URL = adresse;
+  }
   return spawn(process.execPath, [path.join(racine, programmes[programme]), ...args], {
     cwd: racine,
     stdio: "inherit",
-    env: { ...process.env, ...env },
+    env: complet,
   });
 }
 

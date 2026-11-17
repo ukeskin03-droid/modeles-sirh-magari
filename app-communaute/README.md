@@ -95,7 +95,7 @@ Tous les réglages sont facultatifs en développement. Ils sont décrits dans
 |---|---|
 | `DATA_DIR` | Dossier de données de la communauté (base, images) |
 | `SETUP_CODE` | Code demandé pour créer le premier compte. **Obligatoire en production** |
-| `APP_URL` | Adresse publique, utilisée dans les liens des e-mails |
+| `APP_URL` | Adresse publique (liens des e-mails et de partage). **À renseigner dès que l'application est derrière un relais ou un hébergeur**, sinon la connexion est refusée. Trouvée automatiquement dans GitHub Codespaces |
 | `SMTP_URL`, `MAIL_FROM` | Envoi des e-mails. Sans `SMTP_URL`, ils sont écrits dans `<DATA_DIR>/emails` |
 | `INTERNAL_SCHEDULER`, `CRON_SECRET` | Déclenchement des tâches planifiées (interne par défaut) |
 
