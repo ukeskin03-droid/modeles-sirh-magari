@@ -1,0 +1,15 @@
+{
+  // Environnement de test « dans le navigateur » (GitHub Codespaces) : rien à installer
+  // sur l'ordinateur. Au premier lancement, les dépendances s'installent ; à chaque
+  // ouverture, les deux communautés d'exemple démarrent (ports 3001 et 3002).
+  "name": "Application de communauté",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:22",
+  "hostRequirements": { "memory": "4gb" },
+  "postCreateCommand": "cd app-communaute && npm ci",
+  "postAttachCommand": "cd app-communaute && npm run demo",
+  "forwardPorts": [3001, 3002],
+  "portsAttributes": {
+    "3001": { "label": "Communauté PeopleDoc", "onAutoForward": "openBrowser" },
+    "3002": { "label": "Copropriété", "onAutoForward": "notify" }
+  }
+}

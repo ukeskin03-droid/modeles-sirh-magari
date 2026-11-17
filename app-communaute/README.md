@@ -19,6 +19,19 @@ actualités, recherche globale, administration, assistant de configuration, impo
 Les lots fonctionnels 1 à 6 (pilotage, fidélisation, participation, WhatsApp, progression,
 assistance IA) viendront ensuite, un par un.
 
+## Tester sans rien installer (GitHub Codespaces)
+
+Tout se passe dans le navigateur, sur un serveur de GitHub.
+
+1. Ouvrir https://codespaces.new/ukeskin03-droid/modeles-sirh-magari/tree/claude/gifted-edison-u0harq
+   (connecté à son compte GitHub), puis « Create codespace ».
+2. Attendre la fin de l'installation (quelques minutes la première fois) : les deux
+   communautés démarrent toutes seules.
+3. Onglet « Ports » en bas de l'écran : cliquer sur l'icône globe de la ligne 3001
+   (PeopleDoc) ou 3002 (Copropriété).
+4. Après les essais : menu ☰ › « Codespaces » › « Stop current codespace », pour ne pas
+   consommer le quota gratuit.
+
 ## Prérequis
 
 - [Node.js](https://nodejs.org) version 22.18 ou plus récente (`node -v` pour vérifier).
